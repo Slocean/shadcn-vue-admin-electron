@@ -28,6 +28,7 @@
     "clsx": "^2.1.1",
     "electron-updater": "^6.3.9",
     "lucide-vue-next": "^0.563.0",
+    "markstream-vue": "0.0.7-beta.1",
     "radix-vue": "^1.9.17",
     "reka-ui": "^2.7.0",
     "tailwind-merge": "^3.4.0",
