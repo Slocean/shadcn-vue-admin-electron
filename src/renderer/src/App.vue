@@ -1,3 +1,7 @@
-<template>test</template>
+<template>
+  <AppSidebar />
+</template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import AppSidebar from '@/layouts/sidebar/index.vue'
+</script>
