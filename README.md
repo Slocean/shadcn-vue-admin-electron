@@ -1,4 +1,4 @@
-# Cofoe Analysis PC
+# Shadcn-Vue-Admin-Electron
 
 [![Electron](https://img.shields.io/badge/Electron-Latest-blue?logo=electron)](https://www.electronjs.org/)
 [![Vue](https://img.shields.io/badge/Vue-3.x-green?logo=vue.js)](https://vuejs.org/)
