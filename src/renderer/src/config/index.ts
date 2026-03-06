@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 import { SquareTerminal, type LucideIcon } from 'lucide-vue-next'
 import { appRoutes } from '@/router'
+import { i18n } from '@/i18n'
 
 export interface NavItemChild {
   title: string
@@ -28,7 +29,14 @@ function readRouteMeta(route: RouteRecordRaw): AppRouteMeta {
 }
 
 function resolveRouteTitle(route: RouteRecordRaw) {
+  const { t } = i18n.global
   const meta = readRouteMeta(route)
+  const titleKey = typeof route.name === 'string' ? `${route.name}.title` : ''
+
+  if (titleKey && t(titleKey) !== titleKey) {
+    return t(titleKey)
+  }
+
   if (meta.title) {
     return meta.title
   }
@@ -41,8 +49,12 @@ function resolveRouteTitle(route: RouteRecordRaw) {
 }
 
 function resolveGroupTitle(route: RouteRecordRaw) {
+  const { t } = i18n.global
   const meta = readRouteMeta(route)
-  return meta.navGroup || meta.title || DEFAULT_NAV_GROUP
+  const navGroup = meta.navGroup || meta.title || DEFAULT_NAV_GROUP
+  const navKey = `nav.${String(navGroup).toLowerCase()}`
+
+  return t(navKey) !== navKey ? t(navKey) : navGroup
 }
 
 function resolveGroupIcon(routes: RouteRecordRaw[]) {
@@ -69,7 +81,7 @@ function collectLeafRoutes(routes: RouteRecordRaw[], parentPath = ''): NavItemCh
 function buildNavMain(routes: RouteRecordRaw[]): NavItem[] {
   const routeGroups = new Map<string, RouteRecordRaw[]>()
 
-  routes.forEach(route => {
+  routes.filter(route => route.meta?.requiresAuth).forEach(route => {
     const groupTitle = resolveGroupTitle(route)
     const groupRoutes = routeGroups.get(groupTitle) ?? []
     groupRoutes.push(route)

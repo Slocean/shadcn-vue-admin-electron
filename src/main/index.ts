@@ -2,6 +2,9 @@ import { app, shell, BrowserWindow, ipcMain, type IpcMainInvokeEvent } from 'ele
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { closeDatabase } from './lib/database'
+import { getCurrentSession, login, logout, register } from './lib/auth'
+import { getLocale, setLocale, type AppLocale } from './lib/store'
 
 function getSenderWindow(event: IpcMainInvokeEvent): BrowserWindow | null {
   return BrowserWindow.fromWebContents(event.sender)
@@ -90,6 +93,24 @@ app.whenReady().then(() => {
   ipcMain.handle('window:close', (event) => {
     getSenderWindow(event)?.close()
   })
+  ipcMain.handle('settings:get-locale', () => {
+    return getLocale()
+  })
+  ipcMain.handle('settings:set-locale', (_event, locale: AppLocale) => {
+    return setLocale(locale)
+  })
+  ipcMain.handle('auth:get-session', () => {
+    return getCurrentSession()
+  })
+  ipcMain.handle('auth:login', (_event, payload) => {
+    return login(payload)
+  })
+  ipcMain.handle('auth:register', (_event, payload) => {
+    return register(payload)
+  })
+  ipcMain.handle('auth:logout', () => {
+    return logout()
+  })
 
   createWindow()
 
@@ -104,6 +125,8 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
+  closeDatabase()
+
   if (process.platform !== 'darwin') {
     app.quit()
   }

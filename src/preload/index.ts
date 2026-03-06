@@ -19,6 +19,16 @@ const api = {
         ipcRenderer.off('window:maximized-change', listener)
       }
     }
+  },
+  settings: {
+    getLocale: () => ipcRenderer.invoke('settings:get-locale'),
+    setLocale: (locale: 'zh-CN' | 'en-US') => ipcRenderer.invoke('settings:set-locale', locale)
+  },
+  auth: {
+    getSession: () => ipcRenderer.invoke('auth:get-session'),
+    login: (payload: { email: string; password: string }) => ipcRenderer.invoke('auth:login', payload),
+    register: (payload: { username: string; email: string; password: string }) => ipcRenderer.invoke('auth:register', payload),
+    logout: () => ipcRenderer.invoke('auth:logout')
   }
 }
 
