@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
-import { useStorage } from '@vueuse/core'
-import { ref, watch, onMounted } from 'vue'
+import { usePreferredDark, useStorage } from '@vueuse/core'
+import { computed, watch } from 'vue'
 
 export type ThemeColor = 'zinc' | 'red' | 'blue' | 'green' | 'orange' | 'yellow' | 'violet'
+export type ThemeMode = 'light' | 'dark' | 'system'
 
 interface ThemeConfig {
   name: string
@@ -73,10 +74,18 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
 }
 
 export const useThemeStore = defineStore('theme', () => {
-  const mode = useStorage<'light' | 'dark'>('theme-mode', 'light')
+  const preferredDark = usePreferredDark()
+  const mode = useStorage<ThemeMode>('theme-mode', 'light')
   const themeColor = useStorage<ThemeColor>('theme-color', 'zinc')
+  const resolvedMode = computed<'light' | 'dark'>(() => {
+    if (mode.value === 'system') {
+      return preferredDark.value ? 'dark' : 'light'
+    }
 
-  function setMode(newMode: 'light' | 'dark') {
+    return mode.value
+  })
+
+  function setMode(newMode: ThemeMode) {
     mode.value = newMode
   }
 
@@ -86,41 +95,25 @@ export const useThemeStore = defineStore('theme', () => {
 
   function applyTheme() {
     const root = window.document.documentElement
-    
-    // Apply mode
-    root.classList.remove('light', 'dark')
-    root.classList.add(mode.value)
 
-    // Apply color
+    root.classList.remove('light', 'dark')
+    root.classList.add(resolvedMode.value)
+
     const theme = themes[themeColor.value]
     if (theme) {
-      // We need to update the CSS variable for primary color
-      // Since we are using oklch in main.css, we just update the values
-      // Note: The main.css defines --primary as full oklch(...) string, 
-      // but to make it dynamic easily we might need to parse or just overwrite the whole property.
-      // However, our themes definition above only has the numbers. 
-      // Let's check main.css again. It has: --primary: oklch(0.205 0 0);
-      
-      const primaryValue = mode.value === 'dark' ? theme.activeColor.dark : theme.activeColor.light
-      
-      // Update custom property
+      const primaryValue = resolvedMode.value === 'dark' ? theme.activeColor.dark : theme.activeColor.light
+
       root.style.setProperty('--primary', `oklch(${primaryValue})`)
-      
-      // Also update ring and other related colors if needed, but for now primary is key
     }
   }
 
-  // Watch for changes and apply
-  watch([mode, themeColor], () => {
+  watch([mode, themeColor, resolvedMode], () => {
     applyTheme()
   }, { immediate: true })
-  
-  onMounted(() => {
-    applyTheme()
-  })
 
   return {
     mode,
+    resolvedMode,
     themeColor,
     setMode,
     setThemeColor
