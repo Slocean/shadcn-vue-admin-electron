@@ -7,6 +7,7 @@ export const containerClass = 'w-full h-full'
 <script setup lang="ts">
 import AppSidebar from '../components/AppSidebar.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
+import WindowControls from '../components/WindowControls.vue'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -24,12 +25,12 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/s
     <AppSidebar />
     <SidebarInset>
       <header
-        class="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 pr-4"
+        class="app-region-drag flex h-14 shrink-0 items-center gap-3 border-b bg-background/95 px-4 select-none transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 supports-[backdrop-filter]:bg-background/60"
       >
-        <div class="flex items-center gap-2 px-4">
+        <div class="app-region-no-drag flex min-w-0 items-center gap-2">
           <SidebarTrigger class="-ml-1" />
           <Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
-          <Breadcrumb>
+          <Breadcrumb class="min-w-0">
             <BreadcrumbList>
               <BreadcrumbItem class="hidden md:block">
                 <BreadcrumbLink href="#"> Building Your Application </BreadcrumbLink>
@@ -42,9 +43,11 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/s
           </Breadcrumb>
         </div>
 
-        <!-- Right side actions -->
-        <div class="flex items-center gap-2">
+        <div class="min-w-6 flex-1"></div>
+
+        <div class="app-region-no-drag flex items-center gap-2">
           <ThemeSettings />
+          <WindowControls />
         </div>
       </header>
       <div class="flex flex-1 flex-col gap-4 p-4 pt-0">

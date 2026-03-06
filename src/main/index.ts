@@ -1,7 +1,15 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, type IpcMainInvokeEvent } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+
+function getSenderWindow(event: IpcMainInvokeEvent): BrowserWindow | null {
+  return BrowserWindow.fromWebContents(event.sender)
+}
+
+function notifyMaximizedState(window: BrowserWindow): void {
+  window.webContents.send('window:maximized-change', window.isMaximized())
+}
 
 function createWindow(): void {
   // Create the browser window.
@@ -9,6 +17,7 @@ function createWindow(): void {
     width: 900,
     height: 670,
     show: false,
+    frame: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -19,6 +28,14 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+  })
+
+  mainWindow.on('maximize', () => {
+    notifyMaximizedState(mainWindow)
+  })
+
+  mainWindow.on('unmaximize', () => {
+    notifyMaximizedState(mainWindow)
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -51,6 +68,28 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+  ipcMain.handle('window:minimize', (event) => {
+    getSenderWindow(event)?.minimize()
+  })
+  ipcMain.handle('window:toggle-maximize', (event) => {
+    const window = getSenderWindow(event)
+
+    if (!window) return false
+
+    if (window.isMaximized()) {
+      window.unmaximize()
+      return false
+    }
+
+    window.maximize()
+    return true
+  })
+  ipcMain.handle('window:is-maximized', (event) => {
+    return getSenderWindow(event)?.isMaximized() ?? false
+  })
+  ipcMain.handle('window:close', (event) => {
+    getSenderWindow(event)?.close()
+  })
 
   createWindow()
 

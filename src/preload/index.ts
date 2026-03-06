@@ -1,8 +1,26 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  windowControls: {
+    minimize: () => ipcRenderer.invoke('window:minimize'),
+    toggleMaximize: () => ipcRenderer.invoke('window:toggle-maximize'),
+    isMaximized: (): Promise<boolean> => ipcRenderer.invoke('window:is-maximized'),
+    close: () => ipcRenderer.invoke('window:close'),
+    onMaximizedChange: (callback: (isMaximized: boolean) => void): (() => void) => {
+      const listener = (_event: Electron.IpcRendererEvent, isMaximized: boolean): void => {
+        callback(isMaximized)
+      }
+
+      ipcRenderer.on('window:maximized-change', listener)
+
+      return (): void => {
+        ipcRenderer.off('window:maximized-change', listener)
+      }
+    }
+  }
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
