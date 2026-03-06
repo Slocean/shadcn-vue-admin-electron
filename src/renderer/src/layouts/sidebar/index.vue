@@ -5,6 +5,8 @@ export const containerClass = 'w-full h-full'
 </script>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import AppSidebar from '../components/AppSidebar.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
 import WindowControls from '../components/WindowControls.vue'
@@ -18,6 +20,40 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Separator } from '@/components/ui/separator'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+
+const route = useRoute()
+
+type BreadcrumbEntry = {
+  title: string
+  to?: string
+}
+
+function resolveTitle(record: { meta?: Record<string, unknown>; name?: unknown; path: string }) {
+  if (typeof record.meta?.title === 'string' && record.meta.title.length > 0) {
+    return record.meta.title
+  }
+
+  if (typeof record.name === 'string' && record.name.length > 0) {
+    return record.name.charAt(0).toUpperCase() + record.name.slice(1)
+  }
+
+  return record.path
+}
+
+const breadcrumbs = computed<BreadcrumbEntry[]>(() => {
+  const items = route.matched.map((record, index, records) => ({
+    title: resolveTitle(record),
+    to: index === records.length - 1 ? undefined : record.path
+  }))
+
+  const navGroup = typeof route.meta?.navGroup === 'string' ? route.meta.navGroup : ''
+
+  if (navGroup && items[0]?.title !== navGroup) {
+    return [{ title: navGroup }, ...items]
+  }
+
+  return items
+})
 </script>
 
 <template>
@@ -32,13 +68,15 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/s
           <Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
           <Breadcrumb class="min-w-0">
             <BreadcrumbList>
-              <BreadcrumbItem class="hidden md:block">
-                <BreadcrumbLink href="#"> Building Your Application </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator class="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
+              <template v-for="(item, index) in breadcrumbs" :key="`${item.title}-${index}`">
+                <BreadcrumbItem :class="index < breadcrumbs.length - 1 ? 'hidden md:block' : ''">
+                  <BreadcrumbLink v-if="item.to" as-child>
+                    <RouterLink :to="item.to">{{ item.title }}</RouterLink>
+                  </BreadcrumbLink>
+                  <BreadcrumbPage v-else>{{ item.title }}</BreadcrumbPage>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator v-if="index < breadcrumbs.length - 1" :class="index < breadcrumbs.length - 1 ? 'hidden md:block' : ''" />
+              </template>
             </BreadcrumbList>
           </Breadcrumb>
         </div>
