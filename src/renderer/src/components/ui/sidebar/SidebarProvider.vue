@@ -4,7 +4,7 @@ import { defaultDocument, useEventListener, useMediaQuery, useVModel } from "@vu
 import { TooltipProvider } from "reka-ui"
 import { computed, ref } from "vue"
 import { cn } from "@/lib/utils"
-import { provideSidebarContext, SIDEBAR_COOKIE_MAX_AGE, SIDEBAR_COOKIE_NAME, SIDEBAR_KEYBOARD_SHORTCUT, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from "./utils"
+import { provideSidebarContext, SIDEBAR_COOKIE_MAX_AGE, SIDEBAR_COOKIE_NAME, SIDEBAR_KEYBOARD_SHORTCUT, SIDEBAR_WIDTH, SIDEBAR_WIDTH_COOKIE_NAME, SIDEBAR_WIDTH_ICON } from "./utils"
 
 const props = withDefaults(defineProps<{
   defaultOpen?: boolean
@@ -21,6 +21,10 @@ const emits = defineEmits<{
 
 const isMobile = useMediaQuery("(max-width: 768px)")
 const openMobile = ref(false)
+const sidebarWidth = ref(defaultDocument?.cookie
+  .split('; ')
+  .find(item => item.startsWith(`${SIDEBAR_WIDTH_COOKIE_NAME}=`))
+  ?.split('=')[1] || SIDEBAR_WIDTH)
 
 const open = useVModel(props, "open", emits, {
   defaultValue: props.defaultOpen ?? false,
@@ -32,6 +36,11 @@ function setOpen(value: boolean) {
 
   // This sets the cookie to keep the sidebar state.
   document.cookie = `${SIDEBAR_COOKIE_NAME}=${open.value}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+}
+
+function setSidebarWidth(value: string) {
+  sidebarWidth.value = value
+  document.cookie = `${SIDEBAR_WIDTH_COOKIE_NAME}=${value}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
 }
 
 function setOpenMobile(value: boolean) {
@@ -58,6 +67,8 @@ provideSidebarContext({
   state,
   open,
   setOpen,
+  sidebarWidth,
+  setSidebarWidth,
   isMobile,
   openMobile,
   setOpenMobile,
@@ -70,7 +81,7 @@ provideSidebarContext({
     <div
       data-slot="sidebar-wrapper"
       :style="{
-        '--sidebar-width': SIDEBAR_WIDTH,
+        '--sidebar-width': sidebarWidth,
         '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
       }"
       :class="cn('group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full', props.class)"

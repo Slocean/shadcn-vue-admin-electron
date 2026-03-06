@@ -1,13 +1,86 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
+import { onBeforeUnmount } from "vue"
 import { cn } from "@/lib/utils"
-import { useSidebar } from "./utils"
+import { SIDEBAR_WIDTH_MAX, SIDEBAR_WIDTH_MIN, useSidebar } from "./utils"
 
 const props = defineProps<{
   class?: HTMLAttributes["class"]
 }>()
 
-const { toggleSidebar } = useSidebar()
+const { isMobile, open, setOpen, setSidebarWidth, toggleSidebar } = useSidebar()
+
+let removeListeners: (() => void) | null = null
+let moved = false
+
+function clampWidth(value: number) {
+  return Math.min(SIDEBAR_WIDTH_MAX, Math.max(SIDEBAR_WIDTH_MIN, value))
+}
+
+function handlePointerDown(event: PointerEvent) {
+  if (isMobile.value) {
+    return
+  }
+
+  const target = event.currentTarget as HTMLElement | null
+  const sidebar = target?.closest('[data-slot="sidebar"]') as HTMLElement | null
+  const side = sidebar?.dataset.side === 'right' ? 'right' : 'left'
+  const startX = event.clientX
+  moved = false
+
+  const handlePointerMove = (moveEvent: PointerEvent) => {
+    const delta = Math.abs(moveEvent.clientX - startX)
+    if (delta > 3) {
+      moved = true
+    }
+
+    const nextWidth = side === 'right' ? window.innerWidth - moveEvent.clientX : moveEvent.clientX
+    const clampedWidth = clampWidth(nextWidth)
+
+    if (!open.value) {
+      setOpen(true)
+    }
+
+    setSidebarWidth(`${clampedWidth}px`)
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+  }
+
+  const handlePointerUp = () => {
+    document.body.style.cursor = ''
+    document.body.style.userSelect = ''
+    window.removeEventListener('pointermove', handlePointerMove)
+    window.removeEventListener('pointerup', handlePointerUp)
+    removeListeners = null
+
+    window.setTimeout(() => {
+      moved = false
+    }, 0)
+  }
+
+  window.addEventListener('pointermove', handlePointerMove)
+  window.addEventListener('pointerup', handlePointerUp, { once: true })
+  removeListeners = () => {
+    window.removeEventListener('pointermove', handlePointerMove)
+    window.removeEventListener('pointerup', handlePointerUp)
+  }
+}
+
+function handleClick(event: MouseEvent) {
+  if (moved) {
+    event.preventDefault()
+    event.stopPropagation()
+    return
+  }
+
+  toggleSidebar()
+}
+
+onBeforeUnmount(() => {
+  removeListeners?.()
+  document.body.style.cursor = ''
+  document.body.style.userSelect = ''
+})
 </script>
 
 <template>
@@ -26,7 +99,8 @@ const { toggleSidebar } = useSidebar()
       '[[data-side=right][data-collapsible=offcanvas]_&]:-left-2',
       props.class,
     )"
-    @click="toggleSidebar"
+    @pointerdown="handlePointerDown"
+    @click="handleClick"
   >
     <slot />
   </button>
