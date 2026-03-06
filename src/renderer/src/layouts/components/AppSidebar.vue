@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SidebarProps } from '@/components/ui/sidebar'
+import { navMain } from '@/config'
 import { sidebarData } from '@/router/menu'
 import NavMain from './NavMain.vue'
 import NavProjects from './NavProjects.vue'
@@ -18,7 +19,6 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon'
 })
 
-// Use imported data
 const data = sidebarData
 </script>
 
@@ -28,7 +28,7 @@ const data = sidebarData
       <TeamSwitcher :teams="data.teams" />
     </SidebarHeader>
     <SidebarContent>
-      <NavMain :items="data.navMain" />
+      <NavMain :items="navMain" />
       <NavProjects :projects="data.projects" />
     </SidebarContent>
     <SidebarFooter>
