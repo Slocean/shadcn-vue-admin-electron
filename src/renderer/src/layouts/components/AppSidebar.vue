@@ -23,11 +23,17 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 
 const authStore = useAuthStore()
 const data = sidebarData
-const currentUser = computed(() => ({
-  name: authStore.user?.username || data.user.name,
-  email: authStore.user?.email || data.user.email,
-  avatar: data.user.avatar
-}))
+const currentUser = computed(() => {
+  if (authStore.user) {
+    return {
+      name: authStore.user.username,
+      email: authStore.user.email ?? '',
+      avatar: data.user.avatar
+    }
+  }
+
+  return data.user
+})
 </script>
 
 <template>

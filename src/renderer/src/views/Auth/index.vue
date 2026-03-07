@@ -2,6 +2,7 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { Eye, EyeOff } from 'lucide-vue-next'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,9 +20,10 @@ const mode = computed<'login' | 'register'>(() => (route.meta.authMode === 'regi
 const busy = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+const showLoginPassword = ref(false)
 
 const loginForm = reactive({
-  email: '',
+  username: '',
   password: ''
 })
 
@@ -47,7 +49,10 @@ async function handleLogin() {
   successMessage.value = ''
 
   try {
-    await authStore.login(loginForm)
+    await authStore.login({
+      username: loginForm.username,
+      password: loginForm.password
+    })
     successMessage.value = t('auth.successLogin')
     await router.replace('/')
   } catch (error) {
@@ -68,9 +73,10 @@ async function handleRegister() {
   successMessage.value = ''
 
   try {
+    const email = registerForm.email.trim()
     await authStore.register({
       username: registerForm.username,
-      email: registerForm.email,
+      email: email ? email : null,
       password: registerForm.password
     })
     successMessage.value = t('auth.successRegister')
@@ -118,8 +124,27 @@ async function toggleLocale() {
           </TabsList>
 
           <TabsContent value="login" class="space-y-3">
-            <Input v-model="loginForm.email" type="email" :placeholder="t('auth.email')" />
-            <Input v-model="loginForm.password" type="password" :placeholder="t('auth.password')" />
+            <Input v-model="loginForm.username" type="text" :placeholder="t('auth.username')" autocomplete="username" />
+            <div class="relative">
+              <Input
+                v-model="loginForm.password"
+                :type="showLoginPassword ? 'text' : 'password'"
+                :placeholder="t('auth.password')"
+                autocomplete="current-password"
+                class="pr-10"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                class="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
+                :aria-label="showLoginPassword ? t('auth.hidePassword') : t('auth.showPassword')"
+                @click="showLoginPassword = !showLoginPassword"
+              >
+                <Eye v-if="showLoginPassword" class="h-4 w-4" />
+                <EyeOff v-else class="h-4 w-4" />
+              </Button>
+            </div>
             <Button class="w-full" :disabled="busy" @click="handleLogin">
               {{ busy ? t('common.loading') : t('auth.login') }}
             </Button>

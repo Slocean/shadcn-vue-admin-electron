@@ -36,8 +36,8 @@
     subtitle: '账号存于 SQLite，偏好设置存于 electron-conf。',
     loginTab: '登录',
     registerTab: '注册',
-    username: '用户名',
-    email: '邮箱',
+    username: '账号',
+    email: '邮箱（可选）',
     password: '密码',
     confirmPassword: '确认密码',
     login: '登录',
@@ -48,7 +48,9 @@
     switchToRegister: '去注册',
     successLogin: '登录成功。',
     successRegister: '注册成功并已登录。',
-    passwordMismatch: '两次输入的密码不一致。'
+    passwordMismatch: '两次输入的密码不一致。',
+    showPassword: '显示密码',
+    hidePassword: '隐藏密码'
   },
   userMenu: {
     account: '账号',

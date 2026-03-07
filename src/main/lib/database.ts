@@ -22,12 +22,22 @@ export function getDatabase(): Database.Database {
   database = new Database(getDatabasePath())
   database.pragma('journal_mode = WAL')
   database.pragma('foreign_keys = ON')
+  ensureUserSchema(database)
 
+  return database
+}
+
+export function closeDatabase(): void {
+  database?.close()
+  database = null
+}
+
+function ensureUserSchema(database: Database.Database): void {
   database.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL UNIQUE,
-      email TEXT NOT NULL UNIQUE,
+      email TEXT UNIQUE,
       password_hash TEXT NOT NULL,
       salt TEXT NOT NULL,
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -37,10 +47,31 @@ export function getDatabase(): Database.Database {
     CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
   `)
 
-  return database
-}
+  const columns = database.prepare("PRAGMA table_info('users')").all() as Array<{
+    name: string
+    notnull: number
+  }>
+  const emailColumn = columns.find((column) => column.name === 'email')
 
-export function closeDatabase(): void {
-  database?.close()
-  database = null
+  if (emailColumn && emailColumn.notnull === 1) {
+    database.exec(`
+      BEGIN;
+      CREATE TABLE users_new (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        email TEXT UNIQUE,
+        password_hash TEXT NOT NULL,
+        salt TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+      INSERT INTO users_new (id, username, email, password_hash, salt, created_at)
+        SELECT id, username, NULLIF(email, ''), password_hash, salt, created_at
+        FROM users;
+      DROP TABLE users;
+      ALTER TABLE users_new RENAME TO users;
+      CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+      CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+      COMMIT;
+    `)
+  }
 }

@@ -33,7 +33,14 @@ async function handleLogout() {
         <div class="flex items-center gap-2">
           <Badge>{{ t('home.authStatus') }}</Badge>
           <span class="text-sm text-muted-foreground">
-            {{ t('home.signedInAs') }}: {{ authStore.user?.email }}
+            {{ t('home.signedInAs') }}:
+            {{
+              authStore.user
+                ? authStore.user.email
+                  ? `${authStore.user.username} (${authStore.user.email})`
+                  : authStore.user.username
+                : ''
+            }}
           </span>
         </div>
         <div class="flex flex-wrap gap-3">

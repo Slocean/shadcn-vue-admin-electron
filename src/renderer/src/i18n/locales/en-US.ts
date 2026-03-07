@@ -36,8 +36,8 @@
     subtitle: 'Accounts live in SQLite and preferences live in electron-conf.',
     loginTab: 'Login',
     registerTab: 'Register',
-    username: 'Username',
-    email: 'Email',
+    username: 'Account',
+    email: 'Email (optional)',
     password: 'Password',
     confirmPassword: 'Confirm password',
     login: 'Login',
@@ -48,7 +48,9 @@
     switchToRegister: 'Go to register',
     successLogin: 'Logged in successfully.',
     successRegister: 'Registered successfully and signed in.',
-    passwordMismatch: 'The two passwords do not match.'
+    passwordMismatch: 'The two passwords do not match.',
+    showPassword: 'Show password',
+    hidePassword: 'Hide password'
   },
   userMenu: {
     account: 'Account',
