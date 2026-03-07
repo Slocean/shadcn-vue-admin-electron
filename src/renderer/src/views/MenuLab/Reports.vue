@@ -1,6 +1,6 @@
 <template>
   <section class="space-y-2 py-4">
-    <h1 class="text-2xl font-semibold tracking-tight">±¨¸æÖÐÐÄ</h1>
-    <p class="text-muted-foreground">¶à²ã²Ëµ¥²âÊÔÒ³Ãæ£º±¨¸æÖÐÐÄ¡£</p>
+    <h1 class="text-2xl font-semibold tracking-tight">æŠ¥å‘Šä¸­å¿ƒ</h1>
+    <p class="text-muted-foreground">å¤šå±‚èœå•æµ‹è¯•é¡µé¢ï¼šæŠ¥å‘Šä¸­å¿ƒã€‚</p>
   </section>
 </template>
