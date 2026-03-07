@@ -3,26 +3,18 @@ import { SquareTerminal, type LucideIcon } from 'lucide-vue-next'
 import { appRoutes } from '@/router'
 import { i18n } from '@/i18n'
 
-export interface NavItemChild {
-  title: string
-  url: string
-}
-
 export interface NavItem {
   title: string
   url: string
   icon?: LucideIcon
   isActive?: boolean
-  items?: NavItemChild[]
+  items?: NavItem[]
 }
 
 type AppRouteMeta = {
   title?: string
-  navGroup?: string
   navIcon?: LucideIcon
 }
-
-const DEFAULT_NAV_GROUP = 'App'
 
 function readRouteMeta(route: RouteRecordRaw): AppRouteMeta {
   return (route.meta ?? {}) as AppRouteMeta
@@ -48,52 +40,46 @@ function resolveRouteTitle(route: RouteRecordRaw) {
   return route.path
 }
 
-function resolveGroupTitle(route: RouteRecordRaw) {
-  const { t } = i18n.global
-  const meta = readRouteMeta(route)
-  const navGroup = meta.navGroup || meta.title || DEFAULT_NAV_GROUP
-  const navKey = `nav.${String(navGroup).toLowerCase()}`
-
-  return t(navKey) !== navKey ? t(navKey) : navGroup
-}
-
-function resolveGroupIcon(routes: RouteRecordRaw[]) {
-  return routes.map(route => readRouteMeta(route).navIcon).find(Boolean) || SquareTerminal
-}
-
-function collectLeafRoutes(routes: RouteRecordRaw[], parentPath = ''): NavItemChild[] {
+function collectNavItems(
+  routes: RouteRecordRaw[],
+  parentPath = '',
+  inheritedRequiresAuth = false
+): NavItem[] {
   return routes.flatMap(route => {
     const currentPath = route.path.startsWith('/')
       ? route.path
       : `${parentPath}/${route.path}`.replace(/\/+/g, '/')
+    const requiresAuth = Boolean(route.meta?.requiresAuth ?? inheritedRequiresAuth)
 
-    if (route.children?.length) {
-      return collectLeafRoutes(route.children, currentPath)
+    const children = route.children?.length
+      ? collectNavItems(route.children, currentPath, requiresAuth)
+      : []
+
+    if (children.length > 0) {
+      return [{
+        title: resolveRouteTitle(route),
+        url: currentPath,
+        icon: readRouteMeta(route).navIcon || SquareTerminal,
+        items: children
+      }]
+    }
+
+    if (!requiresAuth) {
+      return []
     }
 
     return [{
       title: resolveRouteTitle(route),
-      url: currentPath
+      url: currentPath,
+      icon: readRouteMeta(route).navIcon || SquareTerminal,
     }]
   })
 }
 
 function buildNavMain(routes: RouteRecordRaw[]): NavItem[] {
-  const routeGroups = new Map<string, RouteRecordRaw[]>()
-
-  routes.filter(route => route.meta?.requiresAuth).forEach(route => {
-    const groupTitle = resolveGroupTitle(route)
-    const groupRoutes = routeGroups.get(groupTitle) ?? []
-    groupRoutes.push(route)
-    routeGroups.set(groupTitle, groupRoutes)
-  })
-
-  return Array.from(routeGroups.entries()).map(([title, groupRoutes], index) => ({
-    title,
-    url: groupRoutes[0]?.path || '#',
-    icon: resolveGroupIcon(groupRoutes),
-    isActive: index === 0,
-    items: collectLeafRoutes(groupRoutes)
+  return collectNavItems(routes).map((item, index) => ({
+    ...item,
+    isActive: index === 0
   }))
 }
 
