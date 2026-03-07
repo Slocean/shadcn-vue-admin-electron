@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import { useAuthStore } from '@/store/auth'
+import { ClipboardList, Layers3, Users } from 'lucide-vue-next'
 
 export const appRoutes: RouteRecordRaw[] = [
   {
@@ -48,6 +49,90 @@ export const appRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       layout: 'app'
     }
+  },
+  {
+    path: '/report-management',
+    name: 'reportManagement',
+    component: () => import('../views/ReportManagement.vue'),
+    meta: {
+      title: '报告管理',
+      navGroup: '报告管理',
+      navIcon: ClipboardList,
+      requiresAuth: true,
+      layout: 'app'
+    }
+  },
+  {
+    path: '/patient-management',
+    name: 'patientManagement',
+    component: () => import('../views/PatientManagement.vue'),
+    meta: {
+      title: '患者管理',
+      navGroup: '患者管理',
+      navIcon: Users,
+      requiresAuth: true,
+      layout: 'app'
+    }
+  },
+  {
+    path: '/menu-lab',
+    name: 'menuLab',
+    component: () => import('../views/MenuLab/Layout.vue'),
+    meta: {
+      title: '菜单层级测试',
+      navIcon: Layers3,
+      requiresAuth: true,
+      layout: 'app'
+    },
+    children: [
+      {
+        path: 'reports',
+        name: 'menuLabReports',
+        component: () => import('../views/MenuLab/Reports.vue'),
+        meta: {
+          title: '报告中心',
+          layout: 'app'
+        }
+      },
+      {
+        path: 'patients',
+        name: 'menuLabPatients',
+        component: () => import('../views/MenuLab/Patients.vue'),
+        meta: {
+          title: '患者中心',
+          layout: 'app'
+        }
+      },
+      {
+        path: 'advanced',
+        name: 'menuLabAdvanced',
+        component: () => import('../views/MenuLab/AdvancedLayout.vue'),
+        meta: {
+          title: '高级分组',
+          layout: 'app'
+        },
+        children: [
+          {
+            path: 'daily',
+            name: 'menuLabAdvancedDaily',
+            component: () => import('../views/MenuLab/AdvancedDaily.vue'),
+            meta: {
+              title: '日报',
+              layout: 'app'
+            }
+          },
+          {
+            path: 'monthly',
+            name: 'menuLabAdvancedMonthly',
+            component: () => import('../views/MenuLab/AdvancedMonthly.vue'),
+            meta: {
+              title: '月报',
+              layout: 'app'
+            }
+          }
+        ]
+      }
+    ]
   }
 ]
 

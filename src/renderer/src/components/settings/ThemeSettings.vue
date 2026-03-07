@@ -8,7 +8,7 @@ import {
   SheetContent,
   SheetTrigger
 } from '@/components/ui/sheet'
-import { Check, MonitorSmartphone, Moon, Settings, Sun } from 'lucide-vue-next'
+import { Check, MonitorSmartphone, Moon, Palette, Sun } from 'lucide-vue-next'
 import { Separator } from '@/components/ui/separator'
 
 const themeStore = useThemeStore()
@@ -42,11 +42,11 @@ function getColorValue(color: ThemeColor) {
   <Sheet>
     <SheetTrigger as-child>
       <Button
-        variant="outline"
-        size="icon"
-        class="size-9 rounded-xl border-border/60 bg-background/70 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-accent/60 hover:shadow-md"
+        variant="ghost"
+        size="icon-sm"
+        class="h-8 w-8 rounded-md hover:bg-accent/80"
       >
-        <Settings class="h-[1.1rem] w-[1.1rem]" />
+        <Palette class="h-4 w-4" />
         <span class="sr-only">打开主题设置</span>
       </Button>
     </SheetTrigger>

@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 export interface SessionUser {
   id: number
   username: string
-  email: string
+  email: string | null
   createdAt: string
 }
 
@@ -19,14 +19,22 @@ export const useAuthStore = defineStore('auth', () => {
     return user.value
   }
 
-  async function login(payload: { email: string; password: string }) {
-    user.value = await window.api.auth.login(payload)
+  async function login(payload: { username: string; password: string }) {
+    const result = await window.api.auth.login(payload)
+    if (!result.ok) {
+      throw new Error(result.error)
+    }
+    user.value = result.user
     initialized.value = true
     return user.value
   }
 
-  async function register(payload: { username: string; email: string; password: string }) {
-    user.value = await window.api.auth.register(payload)
+  async function register(payload: { username: string; email?: string | null; password: string }) {
+    const result = await window.api.auth.register(payload)
+    if (!result.ok) {
+      throw new Error(result.error)
+    }
+    user.value = result.user
     initialized.value = true
     return user.value
   }

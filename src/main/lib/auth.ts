@@ -6,24 +6,25 @@ import { getSession, setSession } from './store'
 type DbUser = {
   id: number
   username: string
-  email: string
+  email: string | null
   password_hash: string
   salt: string
   created_at: string
 }
 
 export type AuthPayload = {
-  email: string
-  password: string
   username?: string
+  password?: string
+  email?: string | null
 }
 
-function normalizeEmail(email: string) {
-  return email.trim().toLowerCase()
+function normalizeEmail(email?: string | null) {
+  const normalized = (email ?? '').trim().toLowerCase()
+  return normalized === '' ? null : normalized
 }
 
-function normalizeUsername(username: string) {
-  return username.trim()
+function normalizeUsername(username?: string) {
+  return (username ?? '').trim()
 }
 
 function validateEmail(email: string) {
@@ -62,29 +63,37 @@ export function logout() {
 }
 
 export function register(payload: AuthPayload) {
-  const database = getDatabase()
-  const email = normalizeEmail(payload.email)
-  const username = normalizeUsername(payload.username ?? '')
-  const password = payload.password
-
-  if (!username || username.length < 2) {
-    throw new Error('用户名至少需要 2 个字符。')
+  if (!payload) {
+    throw new Error(AuthError.InvalidRegisterPayload)
   }
 
-  if (!validateEmail(email)) {
-    throw new Error('请输入有效的邮箱地址。')
+  const database = getDatabase()
+  const email = normalizeEmail(payload.email)
+  const username = normalizeUsername(payload.username)
+  const password = payload.password ?? ''
+
+  if (!username || username.length < 2) {
+    throw new Error(AuthError.UsernameTooShort)
+  }
+
+  if (email && !validateEmail(email)) {
+    throw new Error(AuthError.EmailInvalid)
   }
 
   if (!validatePassword(password)) {
-    throw new Error('密码至少需要 6 位。')
+    throw new Error(AuthError.PasswordTooShort)
   }
 
-  const exists = database
-    .prepare('SELECT id FROM users WHERE email = ? OR username = ? LIMIT 1')
-    .get(email, username) as { id: number } | undefined
+  const exists = email
+    ? (database
+        .prepare('SELECT id FROM users WHERE email = ? OR username = ? LIMIT 1')
+        .get(email, username) as { id: number } | undefined)
+    : (database
+        .prepare('SELECT id FROM users WHERE username = ? LIMIT 1')
+        .get(username) as { id: number } | undefined)
 
   if (exists) {
-    throw new Error('该邮箱或用户名已存在。')
+    throw new Error(AuthError.UserExists)
   }
 
   const { salt, passwordHash } = hashPassword(password)
@@ -102,33 +111,63 @@ export function register(payload: AuthPayload) {
 }
 
 export function login(payload: AuthPayload) {
-  const database = getDatabase()
-  const email = normalizeEmail(payload.email)
-  const password = payload.password
+  if (!payload) {
+    throw new Error(AuthError.InvalidLoginPayload)
+  }
 
-  if (!validateEmail(email)) {
-    throw new Error('请输入有效的邮箱地址。')
+  const database = getDatabase()
+  const username = normalizeUsername(payload.username)
+  const password = payload.password ?? ''
+
+  if (!username || username.length < 2) {
+    throw new Error(AuthError.UsernameTooShort)
   }
 
   if (!validatePassword(password)) {
-    throw new Error('密码至少需要 6 位。')
+    throw new Error(AuthError.PasswordTooShort)
   }
 
   const user = database
-    .prepare('SELECT * FROM users WHERE email = ? LIMIT 1')
-    .get(email) as DbUser | undefined
+    .prepare('SELECT * FROM users WHERE username = ? LIMIT 1')
+    .get(username) as DbUser | undefined
 
   if (!user) {
-    throw new Error('账号或密码错误。')
+    throw new Error(AuthError.InvalidCredentials)
   }
 
   const computedHash = scryptSync(password, user.salt, 64)
   const currentHash = Buffer.from(user.password_hash, 'hex')
 
   if (!timingSafeEqual(computedHash, currentHash)) {
-    throw new Error('账号或密码错误。')
+    throw new Error(AuthError.InvalidCredentials)
   }
 
   const session = formatSessionUser(user)
   return setSession(session)
 }
+
+export function ensureDefaultAdmin() {
+  const database = getDatabase()
+  const existing = database
+    .prepare('SELECT id FROM users WHERE username = ? LIMIT 1')
+    .get('admin') as { id: number } | undefined
+
+  if (existing) {
+    return
+  }
+
+  const { salt, passwordHash } = hashPassword('admin123')
+  const insert = database.prepare(
+    'INSERT INTO users (username, email, password_hash, salt) VALUES (?, ?, ?, ?)'
+  )
+  insert.run('admin', null, passwordHash, salt)
+}
+const AuthError = {
+  InvalidLoginPayload: 'AUTH_INVALID_LOGIN_PAYLOAD',
+  InvalidRegisterPayload: 'AUTH_INVALID_REGISTER_PAYLOAD',
+  UsernameTooShort: 'AUTH_USERNAME_TOO_SHORT',
+  EmailInvalid: 'AUTH_EMAIL_INVALID',
+  PasswordTooShort: 'AUTH_PASSWORD_TOO_SHORT',
+  UserExists: 'AUTH_USER_EXISTS',
+  InvalidCredentials: 'AUTH_INVALID_CREDENTIALS'
+} as const

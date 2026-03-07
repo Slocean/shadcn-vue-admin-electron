@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { SidebarProps } from '@/components/ui/sidebar'
 import { navMain } from '@/config'
 import { sidebarData } from '@/router/menu'
+import { useAuthStore } from '@/store/auth'
 import NavMain from './NavMain.vue'
 import NavProjects from './NavProjects.vue'
 import NavUser from './NavUser.vue'
@@ -19,7 +21,19 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon'
 })
 
+const authStore = useAuthStore()
 const data = sidebarData
+const currentUser = computed(() => {
+  if (authStore.user) {
+    return {
+      name: authStore.user.username,
+      email: authStore.user.email ?? '',
+      avatar: data.user.avatar
+    }
+  }
+
+  return data.user
+})
 </script>
 
 <template>
@@ -32,7 +46,7 @@ const data = sidebarData
       <NavProjects :projects="data.projects" />
     </SidebarContent>
     <SidebarFooter>
-      <NavUser :user="data.user" />
+      <NavUser :user="currentUser" />
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>

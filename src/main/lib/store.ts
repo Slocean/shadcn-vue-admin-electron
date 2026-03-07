@@ -4,7 +4,7 @@ export type AppLocale = 'zh-CN' | 'en-US'
 export interface SessionUser {
   id: number
   username: string
-  email: string
+  email: string | null
   createdAt: string
 }
 

@@ -1,9 +1,9 @@
 export default {
   common: {
-    appName: '桌面管理后台',
+    appName: '桌面管理台',
     language: '语言',
     chinese: '中文',
-    english: 'English',
+    english: '英文',
     logout: '退出登录',
     submit: '提交',
     loading: '加载中...'
@@ -15,33 +15,65 @@ export default {
   },
   home: {
     title: '首页',
-    welcome: '欢迎回来，应用基础能力已经接入。',
-    authStatus: '当前认证状态',
-    signedInAs: '已登录账号',
-    sqlite: 'SQLite 已接入主进程',
-    settings: '本地配置通过 electron-conf 持久化',
-    i18n: '多语言通过 vue-i18n 管理'
+    welcome: '欢迎回来。桌面核心能力已就绪。',
+    authStatus: '认证状态',
+    signedInAs: '登录账号',
+    sqlite: 'SQLite 已通过主进程连接',
+    settings: '本地偏好设置已由 electron-conf 持久化',
+    i18n: '多语言由 vue-i18n 管理'
   },
   about: {
     title: '关于'
   },
+  login: {
+    title: '登录'
+  },
+  register: {
+    title: '注册'
+  },
   auth: {
-    brand: '安全登录到桌面端',
-    subtitle: '本地账号数据保存在 SQLite，偏好设置保存在 electron-conf。',
+    brand: '面向桌面应用的安全登录',
+    subtitle: '账号存于 SQLite，偏好设置存于 electron-conf。',
     loginTab: '登录',
     registerTab: '注册',
-    username: '用户名',
-    email: '邮箱',
+    username: '账号',
+    email: '邮箱（可选）',
     password: '密码',
     confirmPassword: '确认密码',
     login: '登录',
     register: '注册',
     noAccount: '还没有账号？',
-    hasAccount: '已经有账号？',
+    hasAccount: '已有账号？',
     switchToLogin: '去登录',
     switchToRegister: '去注册',
     successLogin: '登录成功。',
-    successRegister: '注册成功，已自动登录。',
-    passwordMismatch: '两次输入的密码不一致。'
+    successRegister: '注册成功并已登录。',
+    passwordMismatch: '两次输入的密码不一致。',
+    showPassword: '显示密码',
+    hidePassword: '隐藏密码',
+    errors: {
+      invalidLoginPayload: '登录信息不完整。',
+      invalidRegisterPayload: '注册信息不完整。',
+      usernameTooShort: '账号至少需要 2 个字符。',
+      emailInvalid: '请输入有效的邮箱地址。',
+      passwordTooShort: '密码至少需要 6 个字符。',
+      userExists: '账号或邮箱已存在。',
+      invalidCredentials: '账号或密码错误。',
+      unknown: '登录失败，请稍后重试。'
+    }
+  },
+  userMenu: {
+    accountInfo: '账户信息',
+    dataBackup: '数据备份',
+    dataRestore: '数据恢复',
+    reportSettings: '报告设置',
+    dataDirectory: '数据保存目录',
+    language: '语言',
+    languageBilingual: '语言/Language',
+    languageOptionZh: '中文/Chinese',
+    languageOptionEn: '英文/English',
+    versionUpdate: '版本更新',
+    aboutUs: '关于我们',
+    logout: '退出登录'
   }
 }

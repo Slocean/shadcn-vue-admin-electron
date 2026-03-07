@@ -6,6 +6,7 @@ export const containerClass = 'w-full h-full'
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { RouterLink, useRoute } from 'vue-router'
 import AppSidebar from '../components/AppSidebar.vue'
 import {
@@ -21,6 +22,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/s
 import AiChat from '@/views/AiChat/index.vue'
 
 const route = useRoute()
+const { t } = useI18n()
 
 type BreadcrumbEntry = {
   title: string
@@ -28,6 +30,12 @@ type BreadcrumbEntry = {
 }
 
 function resolveTitle(record: { meta?: Record<string, unknown>; name?: unknown; path: string }) {
+  const titleKey = typeof record.name === 'string' ? `${record.name}.title` : ''
+
+  if (titleKey && t(titleKey) !== titleKey) {
+    return t(titleKey)
+  }
+
   if (typeof record.meta?.title === 'string' && record.meta.title.length > 0) {
     return record.meta.title
   }
@@ -46,9 +54,11 @@ const breadcrumbs = computed<BreadcrumbEntry[]>(() => {
   }))
 
   const navGroup = typeof route.meta?.navGroup === 'string' ? route.meta.navGroup : ''
+  const navKey = navGroup ? `nav.${navGroup.toLowerCase()}` : ''
+  const navTitle = navKey && t(navKey) !== navKey ? t(navKey) : navGroup
 
-  if (navGroup && items[0]?.title !== navGroup) {
-    return [{ title: navGroup }, ...items]
+  if (navTitle && items[0]?.title !== navTitle) {
+    return [{ title: navTitle }, ...items]
   }
 
   return items

@@ -2,6 +2,7 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { Eye, EyeOff } from 'lucide-vue-next'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,9 +20,10 @@ const mode = computed<'login' | 'register'>(() => (route.meta.authMode === 'regi
 const busy = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+const showLoginPassword = ref(false)
 
 const loginForm = reactive({
-  email: '',
+  username: '',
   password: ''
 })
 
@@ -41,17 +43,48 @@ function handleModeChange(value: string | number) {
   router.push(value === 'register' ? '/auth/register' : '/auth/login')
 }
 
+function formatAuthError(error: unknown) {
+  if (!(error instanceof Error)) {
+    return String(error)
+  }
+
+  switch (error.message) {
+    case 'AUTH_INVALID_LOGIN_PAYLOAD':
+      return t('auth.errors.invalidLoginPayload')
+    case 'AUTH_INVALID_REGISTER_PAYLOAD':
+      return t('auth.errors.invalidRegisterPayload')
+    case 'AUTH_USERNAME_TOO_SHORT':
+      return t('auth.errors.usernameTooShort')
+    case 'AUTH_EMAIL_INVALID':
+      return t('auth.errors.emailInvalid')
+    case 'AUTH_PASSWORD_TOO_SHORT':
+      return t('auth.errors.passwordTooShort')
+    case 'AUTH_USER_EXISTS':
+      return t('auth.errors.userExists')
+    case 'AUTH_INVALID_CREDENTIALS':
+      return t('auth.errors.invalidCredentials')
+    default:
+      if (error.message.startsWith('AUTH_')) {
+        return t('auth.errors.unknown')
+      }
+      return error.message
+  }
+}
+
 async function handleLogin() {
   busy.value = true
   errorMessage.value = ''
   successMessage.value = ''
 
   try {
-    await authStore.login(loginForm)
+    await authStore.login({
+      username: loginForm.username,
+      password: loginForm.password
+    })
     successMessage.value = t('auth.successLogin')
     await router.replace('/')
   } catch (error) {
-    errorMessage.value = error instanceof Error ? error.message : String(error)
+    errorMessage.value = formatAuthError(error)
   } finally {
     busy.value = false
   }
@@ -68,15 +101,16 @@ async function handleRegister() {
   successMessage.value = ''
 
   try {
+    const email = registerForm.email.trim()
     await authStore.register({
       username: registerForm.username,
-      email: registerForm.email,
+      email: email ? email : null,
       password: registerForm.password
     })
     successMessage.value = t('auth.successRegister')
     await router.replace('/')
   } catch (error) {
-    errorMessage.value = error instanceof Error ? error.message : String(error)
+    errorMessage.value = formatAuthError(error)
   } finally {
     busy.value = false
   }
@@ -118,8 +152,27 @@ async function toggleLocale() {
           </TabsList>
 
           <TabsContent value="login" class="space-y-3">
-            <Input v-model="loginForm.email" type="email" :placeholder="t('auth.email')" />
-            <Input v-model="loginForm.password" type="password" :placeholder="t('auth.password')" />
+            <Input v-model="loginForm.username" type="text" :placeholder="t('auth.username')" autocomplete="username" />
+            <div class="relative">
+              <Input
+                v-model="loginForm.password"
+                :type="showLoginPassword ? 'text' : 'password'"
+                :placeholder="t('auth.password')"
+                autocomplete="current-password"
+                class="pr-10"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                class="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
+                :aria-label="showLoginPassword ? t('auth.hidePassword') : t('auth.showPassword')"
+                @click="showLoginPassword = !showLoginPassword"
+              >
+                <Eye v-if="showLoginPassword" class="h-4 w-4" />
+                <EyeOff v-else class="h-4 w-4" />
+              </Button>
+            </div>
             <Button class="w-full" :disabled="busy" @click="handleLogin">
               {{ busy ? t('common.loading') : t('auth.login') }}
             </Button>

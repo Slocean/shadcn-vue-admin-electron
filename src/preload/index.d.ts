@@ -18,21 +18,39 @@ interface AppApi {
     getSession: () => Promise<{
       id: number
       username: string
-      email: string
+      email: string | null
       createdAt: string
     } | null>
-    login: (payload: { email: string; password: string }) => Promise<{
-      id: number
-      username: string
-      email: string
-      createdAt: string
-    }>
-    register: (payload: { username: string; email: string; password: string }) => Promise<{
-      id: number
-      username: string
-      email: string
-      createdAt: string
-    }>
+    login: (payload: { username: string; password: string }) => Promise<
+      | {
+          ok: true
+          user: {
+            id: number
+            username: string
+            email: string | null
+            createdAt: string
+          }
+        }
+      | {
+          ok: false
+          error: string
+        }
+    >
+    register: (payload: { username: string; email?: string | null; password: string }) => Promise<
+      | {
+          ok: true
+          user: {
+            id: number
+            username: string
+            email: string | null
+            createdAt: string
+          }
+        }
+      | {
+          ok: false
+          error: string
+        }
+    >
     logout: () => Promise<null>
   }
 }

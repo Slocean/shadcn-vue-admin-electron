@@ -26,8 +26,9 @@ const api = {
   },
   auth: {
     getSession: () => ipcRenderer.invoke('auth:get-session'),
-    login: (payload: { email: string; password: string }) => ipcRenderer.invoke('auth:login', payload),
-    register: (payload: { username: string; email: string; password: string }) => ipcRenderer.invoke('auth:register', payload),
+    login: (payload: { username: string; password: string }) => ipcRenderer.invoke('auth:login', payload),
+    register: (payload: { username: string; email?: string | null; password: string }) =>
+      ipcRenderer.invoke('auth:register', payload),
     logout: () => ipcRenderer.invoke('auth:logout')
   }
 }

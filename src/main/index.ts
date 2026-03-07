@@ -3,7 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { closeDatabase } from './lib/database'
-import { getCurrentSession, login, logout, register } from './lib/auth'
+import { ensureDefaultAdmin, getCurrentSession, login, logout, register } from './lib/auth'
 import { getLocale, setLocale, type AppLocale } from './lib/store'
 
 function getSenderWindow(event: IpcMainInvokeEvent): BrowserWindow | null {
@@ -103,15 +103,24 @@ app.whenReady().then(() => {
     return getCurrentSession()
   })
   ipcMain.handle('auth:login', (_event, payload) => {
-    return login(payload)
+    try {
+      return { ok: true, user: login(payload) }
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) }
+    }
   })
   ipcMain.handle('auth:register', (_event, payload) => {
-    return register(payload)
+    try {
+      return { ok: true, user: register(payload) }
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) }
+    }
   })
   ipcMain.handle('auth:logout', () => {
     return logout()
   })
 
+  ensureDefaultAdmin()
   createWindow()
 
   app.on('activate', function () {

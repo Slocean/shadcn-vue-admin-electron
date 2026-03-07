@@ -1,12 +1,19 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import {
-  BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
+  Download,
+  FolderOpen,
+  Info,
+  Languages,
   LogOut,
-  Sparkles,
-} from "lucide-vue-next"
+  RefreshCw,
+  Settings,
+  Upload,
+  User
+} from 'lucide-vue-next'
 
 import {
   Avatar,
@@ -19,7 +26,12 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
@@ -28,6 +40,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { setAppLocale, type AppLocale } from '@/i18n'
+import { useAuthStore } from '@/store/auth'
 
 const props = defineProps<{
   user: {
@@ -38,6 +52,38 @@ const props = defineProps<{
 }>()
 
 const { isMobile } = useSidebar()
+const { t, locale } = useI18n()
+const authStore = useAuthStore()
+const router = useRouter()
+const userInitials = computed(() => {
+  const name = props.user.name?.trim()
+  const email = props.user.email?.trim()
+  const source = name || email || ''
+
+  if (!source) {
+    return 'U'
+  }
+
+  const parts = source.split(/\s+/).filter(Boolean)
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+  }
+
+  return source.slice(0, 2).toUpperCase()
+})
+
+async function handleLogout() {
+  await authStore.logout()
+  await router.push({ name: 'login' })
+}
+
+async function handleLocaleChange(nextLocale: AppLocale) {
+  if (nextLocale === locale.value) {
+    return
+  }
+
+  await setAppLocale(nextLocale)
+}
 </script>
 
 <template>
@@ -52,7 +98,7 @@ const { isMobile } = useSidebar()
             <Avatar class="h-8 w-8 rounded-lg">
               <AvatarImage :src="user.avatar" :alt="user.name" />
               <AvatarFallback class="rounded-lg">
-                CN
+                {{ userInitials }}
               </AvatarFallback>
             </Avatar>
             <div class="grid flex-1 text-left text-sm leading-tight">
@@ -73,7 +119,7 @@ const { isMobile } = useSidebar()
               <Avatar class="h-8 w-8 rounded-lg">
                 <AvatarImage :src="user.avatar" :alt="user.name" />
                 <AvatarFallback class="rounded-lg">
-                  CN
+                  {{ userInitials }}
                 </AvatarFallback>
               </Avatar>
               <div class="grid flex-1 text-left text-sm leading-tight">
@@ -85,30 +131,63 @@ const { isMobile } = useSidebar()
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
-              <Sparkles />
-              Upgrade to Pro
+              <User />
+              {{ t('userMenu.accountInfo') }}
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Upload />
+              {{ t('userMenu.dataBackup') }}
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Download />
+              {{ t('userMenu.dataRestore') }}
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Settings />
+              {{ t('userMenu.reportSettings') }}
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <FolderOpen />
+              {{ t('userMenu.dataDirectory') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <Languages />
+                {{ t('userMenu.languageBilingual') }}
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent class="min-w-44">
+                <DropdownMenuRadioGroup
+                  :model-value="locale"
+                  @update:model-value="value => handleLocaleChange(value as AppLocale)"
+                >
+                  <DropdownMenuRadioItem value="zh-CN">
+                    {{ t('userMenu.languageOptionZh') }}
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="en-US">
+                    {{ t('userMenu.languageOptionEn') }}
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
             <DropdownMenuItem>
-              <BadgeCheck />
-              Account
+              <RefreshCw />
+              {{ t('userMenu.versionUpdate') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <CreditCard />
-              Billing
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Bell />
-              Notifications
+              <Info />
+              {{ t('userMenu.aboutUs') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <LogOut />
-            Log out
-          </DropdownMenuItem>
+          <DropdownMenuGroup>
+            <DropdownMenuItem @click="handleLogout">
+              <LogOut />
+              {{ t('userMenu.logout') }}
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
     </SidebarMenuItem>
