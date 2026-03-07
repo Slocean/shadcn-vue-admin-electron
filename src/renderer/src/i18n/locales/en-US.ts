@@ -1,4 +1,4 @@
-﻿export default {
+export default {
   common: {
     appName: 'Desktop Admin',
     language: 'Language',
@@ -62,18 +62,18 @@
       unknown: 'Login failed. Please try again.'
     }
   },
-  userMenu: {
-    account: 'Account',
-    billing: 'Billing',
-    uploads: 'Uploads',
-    saved: 'Saved',
-    projects: 'Projects',
+    userMenu: {
+    accountInfo: 'Account info',
+    dataBackup: 'Data backup',
+    dataRestore: 'Data restore',
+    reportSettings: 'Report settings',
+    dataDirectory: 'Data storage folder',
     language: 'Language',
-    languageBilingual: '语言/Language',
-    languageOptionZh: '中文/Chinese',
-    languageOptionEn: '英文/English',
-    sync: 'Sync data',
-    about: 'About',
+    languageBilingual: 'Language',
+    languageOptionZh: 'Chinese',
+    languageOptionEn: 'English',
+    versionUpdate: 'Version update',
+    aboutUs: 'About us',
     logout: 'Log out'
   }
 }

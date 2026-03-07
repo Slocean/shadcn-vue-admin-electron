@@ -4,12 +4,13 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import {
   ChevronsUpDown,
+  Download,
   FolderOpen,
   Info,
   Languages,
   LogOut,
   RefreshCw,
-  Save,
+  Settings,
   Upload,
   User
 } from 'lucide-vue-next'
@@ -131,23 +132,23 @@ async function handleLocaleChange(nextLocale: AppLocale) {
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <User />
-              {{ t('userMenu.account') }}
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Save />
-              {{ t('userMenu.billing') }}
+              {{ t('userMenu.accountInfo') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Upload />
-              {{ t('userMenu.uploads') }}
+              {{ t('userMenu.dataBackup') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Save />
-              {{ t('userMenu.saved') }}
+              <Download />
+              {{ t('userMenu.dataRestore') }}
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Settings />
+              {{ t('userMenu.reportSettings') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <FolderOpen />
-              {{ t('userMenu.projects') }}
+              {{ t('userMenu.dataDirectory') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
@@ -173,11 +174,11 @@ async function handleLocaleChange(nextLocale: AppLocale) {
             </DropdownMenuSub>
             <DropdownMenuItem>
               <RefreshCw />
-              {{ t('userMenu.sync') }}
+              {{ t('userMenu.versionUpdate') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Info />
-              {{ t('userMenu.about') }}
+              {{ t('userMenu.aboutUs') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

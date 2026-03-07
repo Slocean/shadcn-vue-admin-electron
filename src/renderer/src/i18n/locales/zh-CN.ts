@@ -1,4 +1,4 @@
-﻿export default {
+export default {
   common: {
     appName: '桌面管理台',
     language: '语言',
@@ -63,17 +63,17 @@
     }
   },
   userMenu: {
-    account: '账号',
-    billing: '计费',
-    uploads: '上传',
-    saved: '已保存',
-    projects: '项目',
+    accountInfo: '账户信息',
+    dataBackup: '数据备份',
+    dataRestore: '数据恢复',
+    reportSettings: '报告设置',
+    dataDirectory: '数据保存目录',
     language: '语言',
     languageBilingual: '语言/Language',
     languageOptionZh: '中文/Chinese',
     languageOptionEn: '英文/English',
-    sync: '同步数据',
-    about: '关于',
+    versionUpdate: '版本更新',
+    aboutUs: '关于我们',
     logout: '退出登录'
   }
 }
