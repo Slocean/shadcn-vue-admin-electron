@@ -64,6 +64,9 @@ function formatAuthError(error: unknown) {
     case 'AUTH_INVALID_CREDENTIALS':
       return t('auth.errors.invalidCredentials')
     default:
+      if (error.message.startsWith('AUTH_')) {
+        return t('auth.errors.unknown')
+      }
       return error.message
   }
 }

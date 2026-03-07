@@ -58,7 +58,8 @@
       emailInvalid: 'Please enter a valid email address.',
       passwordTooShort: 'Password must be at least 6 characters.',
       userExists: 'This account or email already exists.',
-      invalidCredentials: 'Incorrect account or password.'
+      invalidCredentials: 'Incorrect account or password.',
+      unknown: 'Login failed. Please try again.'
     }
   },
   userMenu: {

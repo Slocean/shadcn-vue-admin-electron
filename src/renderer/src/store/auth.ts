@@ -20,13 +20,21 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function login(payload: { username: string; password: string }) {
-    user.value = await window.api.auth.login(payload)
+    const result = await window.api.auth.login(payload)
+    if (!result.ok) {
+      throw new Error(result.error)
+    }
+    user.value = result.user
     initialized.value = true
     return user.value
   }
 
   async function register(payload: { username: string; email?: string | null; password: string }) {
-    user.value = await window.api.auth.register(payload)
+    const result = await window.api.auth.register(payload)
+    if (!result.ok) {
+      throw new Error(result.error)
+    }
+    user.value = result.user
     initialized.value = true
     return user.value
   }

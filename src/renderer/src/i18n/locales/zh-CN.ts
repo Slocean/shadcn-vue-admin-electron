@@ -58,7 +58,8 @@
       emailInvalid: '请输入有效的邮箱地址。',
       passwordTooShort: '密码至少需要 6 个字符。',
       userExists: '账号或邮箱已存在。',
-      invalidCredentials: '账号或密码错误。'
+      invalidCredentials: '账号或密码错误。',
+      unknown: '登录失败，请稍后重试。'
     }
   },
   userMenu: {

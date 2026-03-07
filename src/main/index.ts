@@ -103,10 +103,18 @@ app.whenReady().then(() => {
     return getCurrentSession()
   })
   ipcMain.handle('auth:login', (_event, payload) => {
-    return login(payload)
+    try {
+      return { ok: true, user: login(payload) }
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) }
+    }
   })
   ipcMain.handle('auth:register', (_event, payload) => {
-    return register(payload)
+    try {
+      return { ok: true, user: register(payload) }
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) }
+    }
   })
   ipcMain.handle('auth:logout', () => {
     return logout()

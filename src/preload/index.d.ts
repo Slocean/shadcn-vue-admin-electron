@@ -21,18 +21,36 @@ interface AppApi {
       email: string | null
       createdAt: string
     } | null>
-    login: (payload: { username: string; password: string }) => Promise<{
-      id: number
-      username: string
-      email: string | null
-      createdAt: string
-    }>
-    register: (payload: { username: string; email?: string | null; password: string }) => Promise<{
-      id: number
-      username: string
-      email: string | null
-      createdAt: string
-    }>
+    login: (payload: { username: string; password: string }) => Promise<
+      | {
+          ok: true
+          user: {
+            id: number
+            username: string
+            email: string | null
+            createdAt: string
+          }
+        }
+      | {
+          ok: false
+          error: string
+        }
+    >
+    register: (payload: { username: string; email?: string | null; password: string }) => Promise<
+      | {
+          ok: true
+          user: {
+            id: number
+            username: string
+            email: string | null
+            createdAt: string
+          }
+        }
+      | {
+          ok: false
+          error: string
+        }
+    >
     logout: () => Promise<null>
   }
 }
