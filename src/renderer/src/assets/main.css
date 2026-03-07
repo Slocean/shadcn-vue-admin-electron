@@ -4,6 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --app-font-family: Inter, "SF Pro Display", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", sans-serif;
+  --app-font-size-offset: 0px;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -75,6 +77,20 @@
 }
 
 @theme inline {
+  --font-sans: var(--app-font-family);
+  --text-xs: calc(0.75rem + var(--app-font-size-offset));
+  --text-sm: calc(0.875rem + var(--app-font-size-offset));
+  --text-base: calc(1rem + var(--app-font-size-offset));
+  --text-lg: calc(1.125rem + var(--app-font-size-offset));
+  --text-xl: calc(1.25rem + var(--app-font-size-offset));
+  --text-2xl: calc(1.5rem + var(--app-font-size-offset));
+  --text-3xl: calc(1.875rem + var(--app-font-size-offset));
+  --text-4xl: calc(2.25rem + var(--app-font-size-offset));
+  --text-5xl: calc(3rem + var(--app-font-size-offset));
+  --text-6xl: calc(3.75rem + var(--app-font-size-offset));
+  --text-7xl: calc(4.5rem + var(--app-font-size-offset));
+  --text-8xl: calc(6rem + var(--app-font-size-offset));
+  --text-9xl: calc(8rem + var(--app-font-size-offset));
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -119,6 +135,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--app-font-family);
   }
 }
 

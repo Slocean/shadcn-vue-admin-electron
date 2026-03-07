@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useThemeStore, themes, type ThemeColor, type ThemeMode } from '@/store/theme'
+import { useThemeStore, themes, fonts, type ThemeColor, type ThemeFont, type ThemeMode } from '@/store/theme'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -8,7 +8,7 @@ import {
   SheetContent,
   SheetTrigger
 } from '@/components/ui/sheet'
-import { Check, MonitorSmartphone, Moon, Palette, Sun } from 'lucide-vue-next'
+import { Check, Minus, MonitorSmartphone, Moon, Palette, Plus, Sun, Type } from 'lucide-vue-next'
 import { Separator } from '@/components/ui/separator'
 
 const themeStore = useThemeStore()
@@ -32,10 +32,20 @@ const modeOptions = [
 ]
 
 const themeEntries = computed(() => Object.entries(themes) as [ThemeColor, (typeof themes)[ThemeColor]][])
+const fontEntries = computed(() => Object.entries(fonts) as [ThemeFont, (typeof fonts)[ThemeFont]][])
+
 function getColorValue(color: ThemeColor) {
   const theme = themes[color]
   return `oklch(${themeStore.resolvedMode === 'dark' ? theme.activeColor.dark : theme.activeColor.light})`
 }
+
+const sizePreviewText = computed(() => {
+  if (themeStore.fontSizeOffset === 0) {
+    return '当前：默认字号'
+  }
+
+  return `当前：${themeStore.fontSizeOffset > 0 ? '+' : ''}${themeStore.fontSizeOffset}px`
+})
 </script>
 
 <template>
@@ -129,6 +139,102 @@ function getColorValue(color: ThemeColor) {
                   </div>
                 </div>
               </button>
+            </div>
+          </section>
+
+          <Separator class="bg-border/60" />
+
+          <section class="space-y-4">
+            <div class="space-y-1">
+              <h3 class="text-sm font-semibold tracking-wide">字体</h3>
+              <p class="text-xs text-muted-foreground">修改后会影响全局界面的默认字体</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <button
+                v-for="[key, font] in fontEntries"
+                :key="key"
+                type="button"
+                :class="
+                  cn(
+                    'group rounded-xl border border-border/70 bg-card/70 p-3 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md',
+                    themeStore.fontFamily === key &&
+                      'border-primary/50 bg-primary/[0.08] shadow-[0_10px_30px_-18px_hsl(var(--primary))]'
+                  )
+                "
+                @click="themeStore.setFontFamily(key)"
+              >
+                <div class="flex items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <div class="truncate text-sm font-medium text-foreground">{{ font.label }}</div>
+                    <div class="mt-1 truncate text-xs text-muted-foreground">{{ font.preview }}</div>
+                    <div class="mt-2 line-clamp-2 text-sm text-foreground/90" :style="{ fontFamily: font.family }">
+                      预览 Aa 字体效果
+                    </div>
+                  </div>
+                  <Check v-if="themeStore.fontFamily === key" class="h-4 w-4 shrink-0 text-primary" />
+                </div>
+              </button>
+            </div>
+          </section>
+
+          <Separator class="bg-border/60" />
+
+          <section class="space-y-4">
+            <div class="space-y-1">
+              <h3 class="text-sm font-semibold tracking-wide">字号大小</h3>
+              <p class="text-xs text-muted-foreground">按固定像素统一增减，例如设置 +1 时，12px 会变成 13px</p>
+            </div>
+
+            <div class="rounded-2xl border border-border/70 bg-card/70 p-3 shadow-sm">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2 text-sm font-medium text-foreground">
+                    <Type class="h-4 w-4" />
+                    <span>{{ sizePreviewText }}</span>
+                  </div>
+                  <p class="mt-1 text-xs text-muted-foreground">所有固定字号会在原有基础上同步偏移</p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="icon-sm"
+                    class="h-8 w-8 rounded-md"
+                    :disabled="themeStore.fontSizeOffset <= -2"
+                    @click="themeStore.setFontSizeOffset(themeStore.fontSizeOffset - 1)"
+                  >
+                    <Minus class="h-4 w-4" />
+                    <span class="sr-only">减小字号</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    class="h-8 rounded-md px-3 text-sm"
+                    @click="themeStore.setFontSizeOffset(0)"
+                  >
+                    重置
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon-sm"
+                    class="h-8 w-8 rounded-md"
+                    :disabled="themeStore.fontSizeOffset >= 6"
+                    @click="themeStore.setFontSizeOffset(themeStore.fontSizeOffset + 1)"
+                  >
+                    <Plus class="h-4 w-4" />
+                    <span class="sr-only">增大字号</span>
+                  </Button>
+                </div>
+              </div>
+
+              <div class="mt-3 rounded-xl bg-muted/40 p-3">
+                <div class="text-xs text-muted-foreground">预览</div>
+                <div class="mt-2 flex items-end gap-3">
+                  <span class="text-xs">12px 文本</span>
+                  <span class="text-sm">14px 文本</span>
+                  <span class="text-base">16px 文本</span>
+                </div>
+              </div>
             </div>
           </section>
         </div>
