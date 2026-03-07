@@ -7,6 +7,8 @@ const api = {
     minimize: () => ipcRenderer.invoke('window:minimize'),
     toggleMaximize: () => ipcRenderer.invoke('window:toggle-maximize'),
     isMaximized: (): Promise<boolean> => ipcRenderer.invoke('window:is-maximized'),
+    toggleAlwaysOnTop: (): Promise<boolean> => ipcRenderer.invoke('window:toggle-always-on-top'),
+    isAlwaysOnTop: (): Promise<boolean> => ipcRenderer.invoke('window:is-always-on-top'),
     close: () => ipcRenderer.invoke('window:close'),
     onMaximizedChange: (callback: (isMaximized: boolean) => void): (() => void) => {
       const listener = (_event: Electron.IpcRendererEvent, isMaximized: boolean): void => {
@@ -17,6 +19,17 @@ const api = {
 
       return (): void => {
         ipcRenderer.off('window:maximized-change', listener)
+      }
+    },
+    onAlwaysOnTopChange: (callback: (isAlwaysOnTop: boolean) => void): (() => void) => {
+      const listener = (_event: Electron.IpcRendererEvent, isAlwaysOnTop: boolean): void => {
+        callback(isAlwaysOnTop)
+      }
+
+      ipcRenderer.on('window:always-on-top-change', listener)
+
+      return (): void => {
+        ipcRenderer.off('window:always-on-top-change', listener)
       }
     }
   },

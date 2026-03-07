@@ -14,6 +14,10 @@ function notifyMaximizedState(window: BrowserWindow): void {
   window.webContents.send('window:maximized-change', window.isMaximized())
 }
 
+function notifyAlwaysOnTopState(window: BrowserWindow): void {
+  window.webContents.send('window:always-on-top-change', window.isAlwaysOnTop())
+}
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -39,6 +43,10 @@ function createWindow(): void {
 
   mainWindow.on('unmaximize', () => {
     notifyMaximizedState(mainWindow)
+  })
+
+  mainWindow.on('always-on-top-changed', () => {
+    notifyAlwaysOnTopState(mainWindow)
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -89,6 +97,18 @@ app.whenReady().then(() => {
   })
   ipcMain.handle('window:is-maximized', (event) => {
     return getSenderWindow(event)?.isMaximized() ?? false
+  })
+  ipcMain.handle('window:toggle-always-on-top', (event) => {
+    const window = getSenderWindow(event)
+
+    if (!window) return false
+
+    const nextValue = !window.isAlwaysOnTop()
+    window.setAlwaysOnTop(nextValue)
+    return nextValue
+  })
+  ipcMain.handle('window:is-always-on-top', (event) => {
+    return getSenderWindow(event)?.isAlwaysOnTop() ?? false
   })
   ipcMain.handle('window:close', (event) => {
     getSenderWindow(event)?.close()

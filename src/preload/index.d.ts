@@ -4,8 +4,11 @@ interface WindowControlsApi {
   minimize: () => Promise<void>
   toggleMaximize: () => Promise<boolean>
   isMaximized: () => Promise<boolean>
+  toggleAlwaysOnTop: () => Promise<boolean>
+  isAlwaysOnTop: () => Promise<boolean>
   close: () => Promise<void>
   onMaximizedChange: (callback: (isMaximized: boolean) => void) => () => void
+  onAlwaysOnTopChange: (callback: (isAlwaysOnTop: boolean) => void) => () => void
 }
 
 interface AppApi {

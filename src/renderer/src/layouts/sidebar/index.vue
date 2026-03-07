@@ -9,6 +9,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink, useRoute } from 'vue-router'
 import AppSidebar from '../components/AppSidebar.vue'
+import AlwaysOnTopButton from '../components/AlwaysOnTopButton.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
 import WindowControls from '../components/WindowControls.vue'
 import {
@@ -95,6 +96,7 @@ const breadcrumbs = computed<BreadcrumbEntry[]>(() => {
 
         <div class="app-region-no-drag flex items-center gap-2">
           <ThemeSettings />
+          <AlwaysOnTopButton />
           <WindowControls />
         </div>
       </header>
