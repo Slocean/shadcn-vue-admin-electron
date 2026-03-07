@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -33,11 +33,11 @@ async function handleLogout() {
         <div class="flex items-center gap-2">
           <Badge>{{ t('home.authStatus') }}</Badge>
           <span class="text-sm text-muted-foreground">
-            {{ t('home.signedInAs') }}：{{ authStore.user?.email }}
+            {{ t('home.signedInAs') }}: {{ authStore.user?.email }}
           </span>
         </div>
         <div class="flex flex-wrap gap-3">
-          <Button @click="toggleLocale">{{ t('common.language') }}：{{ languageLabel }}</Button>
+          <Button @click="toggleLocale">{{ t('common.language') }}: {{ languageLabel }}</Button>
           <Button variant="outline" @click="handleLogout">{{ t('common.logout') }}</Button>
         </div>
       </CardContent>

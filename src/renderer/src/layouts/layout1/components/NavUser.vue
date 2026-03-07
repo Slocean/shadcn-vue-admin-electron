@@ -1,5 +1,7 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import {
   ChevronsUpDown,
   FolderOpen,
@@ -23,7 +25,12 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
@@ -32,6 +39,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { setAppLocale, type AppLocale } from '@/i18n'
+import { useAuthStore } from '@/store/auth'
 
 const props = defineProps<{
   user: {
@@ -42,6 +51,9 @@ const props = defineProps<{
 }>()
 
 const { isMobile } = useSidebar()
+const { t, locale } = useI18n()
+const authStore = useAuthStore()
+const router = useRouter()
 const userInitials = computed(() => {
   const name = props.user.name?.trim()
   const email = props.user.email?.trim()
@@ -58,6 +70,19 @@ const userInitials = computed(() => {
 
   return source.slice(0, 2).toUpperCase()
 })
+
+async function handleLogout() {
+  await authStore.logout()
+  await router.push({ name: 'login' })
+}
+
+async function handleLocaleChange(nextLocale: AppLocale) {
+  if (nextLocale === locale.value) {
+    return
+  }
+
+  await setAppLocale(nextLocale)
+}
 </script>
 
 <template>
@@ -106,45 +131,60 @@ const userInitials = computed(() => {
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <User />
-              账户信息
+              {{ t('userMenu.account') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Save />
-              数据备份
+              {{ t('userMenu.billing') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Upload />
-              数据恢复
+              {{ t('userMenu.uploads') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Save />
-              报告设置
+              {{ t('userMenu.saved') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <FolderOpen />
-              数据保存目录
+              {{ t('userMenu.projects') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <Languages />
-              语言
-            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <Languages />
+                {{ t('userMenu.languageBilingual') }}
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent class="min-w-44">
+                <DropdownMenuRadioGroup
+                  :model-value="locale"
+                  @update:model-value="value => handleLocaleChange(value as AppLocale)"
+                >
+                  <DropdownMenuRadioItem value="zh-CN">
+                    {{ t('userMenu.languageOptionZh') }}
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="en-US">
+                    {{ t('userMenu.languageOptionEn') }}
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
             <DropdownMenuItem>
               <RefreshCw />
-              版本更新
+              {{ t('userMenu.sync') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Info />
-              关于我们
+              {{ t('userMenu.about') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
+            <DropdownMenuItem @click="handleLogout">
               <LogOut />
-              退出登录
+              {{ t('userMenu.logout') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

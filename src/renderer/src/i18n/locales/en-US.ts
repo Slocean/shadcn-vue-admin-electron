@@ -1,8 +1,8 @@
-export default {
+﻿export default {
   common: {
     appName: 'Desktop Admin',
     language: 'Language',
-    chinese: '中文',
+    chinese: 'Chinese',
     english: 'English',
     logout: 'Log out',
     submit: 'Submit',
@@ -25,6 +25,12 @@ export default {
   about: {
     title: 'About'
   },
+  login: {
+    title: 'Login'
+  },
+  register: {
+    title: 'Register'
+  },
   auth: {
     brand: 'Secure sign-in for desktop',
     subtitle: 'Accounts live in SQLite and preferences live in electron-conf.',
@@ -43,5 +49,19 @@ export default {
     successLogin: 'Logged in successfully.',
     successRegister: 'Registered successfully and signed in.',
     passwordMismatch: 'The two passwords do not match.'
+  },
+  userMenu: {
+    account: 'Account',
+    billing: 'Billing',
+    uploads: 'Uploads',
+    saved: 'Saved',
+    projects: 'Projects',
+    language: 'Language',
+    languageBilingual: '语言/Language',
+    languageOptionZh: '中文/Chinese',
+    languageOptionEn: '英文/English',
+    sync: 'Sync data',
+    about: 'About',
+    logout: 'Log out'
   }
 }
