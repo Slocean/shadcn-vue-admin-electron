@@ -43,6 +43,31 @@ function handleModeChange(value: string | number) {
   router.push(value === 'register' ? '/auth/register' : '/auth/login')
 }
 
+function formatAuthError(error: unknown) {
+  if (!(error instanceof Error)) {
+    return String(error)
+  }
+
+  switch (error.message) {
+    case 'AUTH_INVALID_LOGIN_PAYLOAD':
+      return t('auth.errors.invalidLoginPayload')
+    case 'AUTH_INVALID_REGISTER_PAYLOAD':
+      return t('auth.errors.invalidRegisterPayload')
+    case 'AUTH_USERNAME_TOO_SHORT':
+      return t('auth.errors.usernameTooShort')
+    case 'AUTH_EMAIL_INVALID':
+      return t('auth.errors.emailInvalid')
+    case 'AUTH_PASSWORD_TOO_SHORT':
+      return t('auth.errors.passwordTooShort')
+    case 'AUTH_USER_EXISTS':
+      return t('auth.errors.userExists')
+    case 'AUTH_INVALID_CREDENTIALS':
+      return t('auth.errors.invalidCredentials')
+    default:
+      return error.message
+  }
+}
+
 async function handleLogin() {
   busy.value = true
   errorMessage.value = ''
@@ -56,7 +81,7 @@ async function handleLogin() {
     successMessage.value = t('auth.successLogin')
     await router.replace('/')
   } catch (error) {
-    errorMessage.value = error instanceof Error ? error.message : String(error)
+    errorMessage.value = formatAuthError(error)
   } finally {
     busy.value = false
   }
@@ -82,7 +107,7 @@ async function handleRegister() {
     successMessage.value = t('auth.successRegister')
     await router.replace('/')
   } catch (error) {
-    errorMessage.value = error instanceof Error ? error.message : String(error)
+    errorMessage.value = formatAuthError(error)
   } finally {
     busy.value = false
   }

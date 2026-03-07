@@ -50,7 +50,16 @@
     successRegister: 'Registered successfully and signed in.',
     passwordMismatch: 'The two passwords do not match.',
     showPassword: 'Show password',
-    hidePassword: 'Hide password'
+    hidePassword: 'Hide password',
+    errors: {
+      invalidLoginPayload: 'Login information is missing.',
+      invalidRegisterPayload: 'Registration information is missing.',
+      usernameTooShort: 'Account must be at least 2 characters.',
+      emailInvalid: 'Please enter a valid email address.',
+      passwordTooShort: 'Password must be at least 6 characters.',
+      userExists: 'This account or email already exists.',
+      invalidCredentials: 'Incorrect account or password.'
+    }
   },
   userMenu: {
     account: 'Account',

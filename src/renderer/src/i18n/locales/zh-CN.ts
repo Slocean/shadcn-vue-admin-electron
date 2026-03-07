@@ -50,7 +50,16 @@
     successRegister: '注册成功并已登录。',
     passwordMismatch: '两次输入的密码不一致。',
     showPassword: '显示密码',
-    hidePassword: '隐藏密码'
+    hidePassword: '隐藏密码',
+    errors: {
+      invalidLoginPayload: '登录信息不完整。',
+      invalidRegisterPayload: '注册信息不完整。',
+      usernameTooShort: '账号至少需要 2 个字符。',
+      emailInvalid: '请输入有效的邮箱地址。',
+      passwordTooShort: '密码至少需要 6 个字符。',
+      userExists: '账号或邮箱已存在。',
+      invalidCredentials: '账号或密码错误。'
+    }
   },
   userMenu: {
     account: '账号',

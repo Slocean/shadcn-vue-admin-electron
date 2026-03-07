@@ -64,7 +64,7 @@ export function logout() {
 
 export function register(payload: AuthPayload) {
   if (!payload) {
-    throw new Error('Invalid registration payload.')
+    throw new Error(AuthError.InvalidRegisterPayload)
   }
 
   const database = getDatabase()
@@ -73,15 +73,15 @@ export function register(payload: AuthPayload) {
   const password = payload.password ?? ''
 
   if (!username || username.length < 2) {
-    throw new Error('Username must be at least 2 characters.')
+    throw new Error(AuthError.UsernameTooShort)
   }
 
   if (email && !validateEmail(email)) {
-    throw new Error('Please provide a valid email address.')
+    throw new Error(AuthError.EmailInvalid)
   }
 
   if (!validatePassword(password)) {
-    throw new Error('Password must be at least 6 characters.')
+    throw new Error(AuthError.PasswordTooShort)
   }
 
   const exists = email
@@ -93,7 +93,7 @@ export function register(payload: AuthPayload) {
         .get(username) as { id: number } | undefined)
 
   if (exists) {
-    throw new Error('This username or email is already in use.')
+    throw new Error(AuthError.UserExists)
   }
 
   const { salt, passwordHash } = hashPassword(password)
@@ -112,7 +112,7 @@ export function register(payload: AuthPayload) {
 
 export function login(payload: AuthPayload) {
   if (!payload) {
-    throw new Error('Invalid login payload.')
+    throw new Error(AuthError.InvalidLoginPayload)
   }
 
   const database = getDatabase()
@@ -120,11 +120,11 @@ export function login(payload: AuthPayload) {
   const password = payload.password ?? ''
 
   if (!username || username.length < 2) {
-    throw new Error('Please enter your account name.')
+    throw new Error(AuthError.UsernameTooShort)
   }
 
   if (!validatePassword(password)) {
-    throw new Error('Password must be at least 6 characters.')
+    throw new Error(AuthError.PasswordTooShort)
   }
 
   const user = database
@@ -132,14 +132,14 @@ export function login(payload: AuthPayload) {
     .get(username) as DbUser | undefined
 
   if (!user) {
-    throw new Error('Incorrect account or password.')
+    throw new Error(AuthError.InvalidCredentials)
   }
 
   const computedHash = scryptSync(password, user.salt, 64)
   const currentHash = Buffer.from(user.password_hash, 'hex')
 
   if (!timingSafeEqual(computedHash, currentHash)) {
-    throw new Error('Incorrect account or password.')
+    throw new Error(AuthError.InvalidCredentials)
   }
 
   const session = formatSessionUser(user)
@@ -162,3 +162,12 @@ export function ensureDefaultAdmin() {
   )
   insert.run('admin', null, passwordHash, salt)
 }
+const AuthError = {
+  InvalidLoginPayload: 'AUTH_INVALID_LOGIN_PAYLOAD',
+  InvalidRegisterPayload: 'AUTH_INVALID_REGISTER_PAYLOAD',
+  UsernameTooShort: 'AUTH_USERNAME_TOO_SHORT',
+  EmailInvalid: 'AUTH_EMAIL_INVALID',
+  PasswordTooShort: 'AUTH_PASSWORD_TOO_SHORT',
+  UserExists: 'AUTH_USER_EXISTS',
+  InvalidCredentials: 'AUTH_INVALID_CREDENTIALS'
+} as const
