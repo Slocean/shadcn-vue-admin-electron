@@ -166,7 +166,6 @@ const sizePreviewText = computed(() => {
                 <div class="flex items-start justify-between gap-2">
                   <div class="min-w-0 flex-1">
                     <div class="truncate text-sm font-medium text-foreground">{{ font.label }}</div>
-                    <div class="mt-1 truncate text-xs text-muted-foreground">{{ font.preview }}</div>
                     <div class="mt-2 line-clamp-2 text-sm text-foreground/90" :style="{ fontFamily: font.family }">
                       预览 Aa 字体效果
                     </div>
