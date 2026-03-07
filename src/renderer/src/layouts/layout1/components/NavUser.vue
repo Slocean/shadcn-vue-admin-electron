@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import {
-  BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
+  FolderOpen,
+  Info,
+  Languages,
   LogOut,
-  Sparkles,
-} from "lucide-vue-next"
+  RefreshCw,
+  Save,
+  Upload,
+  User
+} from 'lucide-vue-next'
 
 import {
   Avatar,
@@ -102,30 +105,48 @@ const userInitials = computed(() => {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
-              <Sparkles />
-              Upgrade to Pro
+              <User />
+              账户信息
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Save />
+              数据备份
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Upload />
+              数据恢复
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Save />
+              报告设置
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <FolderOpen />
+              数据保存目录
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
-              <BadgeCheck />
-              Account
+              <Languages />
+              语言
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <CreditCard />
-              Billing
+              <RefreshCw />
+              版本更新
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Bell />
-              Notifications
+              <Info />
+              关于我们
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <LogOut />
-            Log out
-          </DropdownMenuItem>
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <LogOut />
+              退出登录
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
     </SidebarMenuItem>
