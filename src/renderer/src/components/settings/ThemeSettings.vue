@@ -147,7 +147,6 @@ const sizePreviewText = computed(() => {
           <section class="space-y-4">
             <div class="space-y-1">
               <h3 class="text-sm font-semibold tracking-wide">字体</h3>
-              <p class="text-xs text-muted-foreground">修改后会影响全局界面的默认字体</p>
             </div>
 
             <div class="grid grid-cols-2 gap-2.5">
@@ -183,7 +182,6 @@ const sizePreviewText = computed(() => {
           <section class="space-y-4">
             <div class="space-y-1">
               <h3 class="text-sm font-semibold tracking-wide">字号大小</h3>
-              <p class="text-xs text-muted-foreground">按固定像素统一增减，例如设置 +1 时，12px 会变成 13px</p>
             </div>
 
             <div class="rounded-2xl border border-border/70 bg-card/70 p-3 shadow-sm">
