@@ -20,7 +20,6 @@ const { t } = useI18n()
 const mode = computed<'login' | 'register'>(() =>
   route.meta.authMode === 'register' ? 'register' : 'login'
 )
-const authCardWidthClass = computed(() => (mode.value === 'login' ? 'max-w-sm' : 'max-w-md'))
 const busy = ref(false)
 const successMessage = ref('')
 const showLoginPassword = ref(false)
@@ -143,7 +142,7 @@ async function handleRegister() {
       />
     </div>
 
-    <div :class="['app-region-no-drag relative z-10 w-full', authCardWidthClass]">
+    <div class="app-region-no-drag relative z-10 w-full max-w-sm">
       <Card
         class="overflow-hidden p-8 rounded-[15px] border-border/70 bg-card/95 shadow-[0_30px_70px_-18px_rgba(0,0,0,0.18)] backdrop-blur"
       >
@@ -261,7 +260,7 @@ async function handleRegister() {
             </TabsContent>
 
             <TabsContent value="register" class="mt-0">
-              <form class="space-y-3.5" @submit.prevent="handleRegister">
+              <form class="space-y-4" @submit.prevent="handleRegister">
                 <div class="flex justify-end">
                   <Button
                     variant="link"
@@ -285,7 +284,7 @@ async function handleRegister() {
                       v-model="registerForm.username"
                       autocomplete="username"
                       :placeholder="t('auth.usernamePlaceholder')"
-                      class="h-11 rounded-xl border-border/70 bg-muted/35 pl-11"
+                      class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11"
                     />
                   </div>
                 </div>
@@ -300,7 +299,7 @@ async function handleRegister() {
                     type="email"
                     autocomplete="email"
                     :placeholder="t('auth.emailPlaceholder')"
-                    class="h-11 rounded-xl border-border/70 bg-muted/35"
+                    class="h-12 rounded-xl border-border/70 bg-muted/35"
                   />
                 </div>
 
@@ -318,7 +317,7 @@ async function handleRegister() {
                       :type="showRegisterPassword ? 'text' : 'password'"
                       autocomplete="new-password"
                       :placeholder="t('auth.passwordPlaceholder')"
-                      class="h-11 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11"
+                      class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11"
                     />
                     <Button
                       type="button"
@@ -352,7 +351,7 @@ async function handleRegister() {
                       :type="showConfirmPassword ? 'text' : 'password'"
                       autocomplete="new-password"
                       :placeholder="t('auth.confirmPasswordPlaceholder')"
-                      class="h-11 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11"
+                      class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11"
                     />
                     <Button
                       type="button"
@@ -372,7 +371,7 @@ async function handleRegister() {
 
                 <Button
                   type="submit"
-                  class="mt-1 h-11 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/20"
+                  class="h-12 w-full rounded-[32px] text-sm font-semibold shadow-lg shadow-primary/25"
                   :disabled="busy"
                 >
                   {{ busy ? t('common.loading') : t('auth.register') }}
