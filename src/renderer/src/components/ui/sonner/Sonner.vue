@@ -1,10 +1,29 @@
 <script lang="ts" setup>
+import { computed } from "vue"
 import type { ToasterProps } from "vue-sonner"
 import { CircleCheckIcon, InfoIcon, Loader2Icon, OctagonXIcon, TriangleAlertIcon, XIcon } from "lucide-vue-next"
 import { Toaster as Sonner } from "vue-sonner"
 import { cn } from "@/lib/utils"
 
-const props = defineProps<ToasterProps>()
+const props = withDefaults(defineProps<ToasterProps>(), {
+  richColors: true,
+  closeButton: true,
+  closeButtonPosition: "top-right",
+})
+
+const mergedProps = computed<ToasterProps>(() => ({
+  ...props,
+  toastOptions: {
+    ...props.toastOptions,
+    classes: {
+      success: "border-emerald-500/40 bg-emerald-500 text-white",
+      info: "border-sky-500/40 bg-sky-500 text-white",
+      warning: "border-amber-500/40 bg-amber-500 text-black",
+      error: "border-rose-500/40 bg-rose-500 text-white",
+      ...(props.toastOptions?.classes ?? {}),
+    },
+  },
+}))
 </script>
 
 <template>
@@ -16,7 +35,7 @@ const props = defineProps<ToasterProps>()
       '--normal-border': 'var(--border)',
       '--border-radius': 'var(--radius)',
     }"
-    v-bind="props"
+    v-bind="mergedProps"
   >
     <template #success-icon>
       <CircleCheckIcon class="size-4" />
