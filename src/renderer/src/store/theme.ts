@@ -35,7 +35,7 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
     label: 'Red',
     activeColor: {
       light: '0.577 0.245 27.325',
-      dark: '0.577 0.245 27.325'
+      dark: '0.637 0.237 25.331'
     }
   },
   blue: {
@@ -43,7 +43,7 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
     label: 'Blue',
     activeColor: {
       light: '0.5 0.2 250',
-      dark: '0.5 0.2 250'
+      dark: '0.623 0.214 259.815'
     }
   },
   green: {
@@ -51,7 +51,7 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
     label: 'Green',
     activeColor: {
       light: '0.5 0.2 140',
-      dark: '0.5 0.2 140'
+      dark: '0.723 0.219 149.579'
     }
   },
   orange: {
@@ -59,7 +59,7 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
     label: 'Orange',
     activeColor: {
       light: '0.6 0.2 50',
-      dark: '0.6 0.2 50'
+      dark: '0.705 0.213 47.604'
     }
   },
   yellow: {
@@ -67,7 +67,7 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
     label: 'Yellow',
     activeColor: {
       light: '0.7 0.18 80',
-      dark: '0.7 0.18 80'
+      dark: '0.795 0.184 86.047'
     }
   },
   violet: {
@@ -75,7 +75,7 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
     label: 'Violet',
     activeColor: {
       light: '0.5 0.2 300',
-      dark: '0.5 0.2 300'
+      dark: '0.606 0.25 292.717'
     }
   }
 }
@@ -160,12 +160,12 @@ export const useThemeStore = defineStore('theme', () => {
 
     root.classList.remove('light', 'dark')
     root.classList.add(resolvedMode.value)
+    root.style.colorScheme = resolvedMode.value
 
-    const theme = themes[themeColor.value]
-    if (theme) {
-      const primaryValue = resolvedMode.value === 'dark' ? theme.activeColor.dark : theme.activeColor.light
-
-      root.style.setProperty('--primary', `oklch(${primaryValue})`)
+    if (themes[themeColor.value]) {
+      root.setAttribute('data-theme', themeColor.value)
+    } else {
+      root.removeAttribute('data-theme')
     }
 
     const font = fonts[fontFamily.value]

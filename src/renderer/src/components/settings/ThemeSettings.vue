@@ -78,7 +78,7 @@ const sizePreviewText = computed(() => {
                   cn(
                     'group relative flex items-center justify-center gap-1.5 rounded-2xl border border-border/70 bg-card/70 px-2 py-2.5 text-center shadow-sm transition-all duration-200 hover:border-primary/35 hover:shadow-md',
                     themeStore.mode === option.value &&
-                      'border-primary/50 bg-primary/[0.08] shadow-[0_10px_30px_-18px_hsl(var(--primary))]'
+                      'border-primary/50 bg-primary/[0.08] shadow-[0_10px_30px_-18px_var(--primary)]'
                   )
                 "
                 @click="themeStore.setMode(option.value)"
@@ -112,7 +112,7 @@ const sizePreviewText = computed(() => {
                   cn(
                     'group rounded-xl border border-border/70 bg-card/70 p-2.5 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md',
                     themeStore.themeColor === key &&
-                      'border-primary/50 bg-primary/[0.08] shadow-[0_10px_30px_-18px_hsl(var(--primary))]'
+                      'border-primary/50 bg-primary/[0.08] shadow-[0_10px_30px_-18px_var(--primary)]'
                   )
                 "
                 @click="themeStore.setThemeColor(key)"
@@ -158,7 +158,7 @@ const sizePreviewText = computed(() => {
                   cn(
                     'group rounded-xl border border-border/70 bg-card/70 p-3 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md',
                     themeStore.fontFamily === key &&
-                      'border-primary/50 bg-primary/[0.08] shadow-[0_10px_30px_-18px_hsl(var(--primary))]'
+                      'border-primary/50 bg-primary/[0.08] shadow-[0_10px_30px_-18px_var(--primary)]'
                   )
                 "
                 @click="themeStore.setFontFamily(key)"
