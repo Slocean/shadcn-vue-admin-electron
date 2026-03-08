@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ArrowRight, Building2, Eye, EyeOff, Lock, User } from 'lucide-vue-next'
+import { Building2 } from 'lucide-vue-next'
 import { showToast } from '@/components/ui/sonner'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import GlobalSystemControls from '@/layouts/components/GlobalSystemControls.vue'
+import LoginForm from './components/LoginForm.vue'
+import RegisterForm, { type RegisterPayload } from './components/RegisterForm.vue'
 import { useAuthStore } from '@/store/auth'
 
 const route = useRoute()
@@ -22,22 +22,6 @@ const mode = computed<'login' | 'register'>(() =>
 )
 const busy = ref(false)
 const successMessage = ref('')
-const showLoginPassword = ref(false)
-const showRegisterPassword = ref(false)
-const showConfirmPassword = ref(false)
-const rememberDevice = ref(true)
-
-const loginForm = reactive({
-  username: '',
-  password: ''
-})
-
-const registerForm = reactive({
-  username: '',
-  email: '',
-  password: '',
-  confirmPassword: ''
-})
 
 watch(mode, () => {
   successMessage.value = ''
@@ -71,14 +55,14 @@ function formatAuthError(error: unknown) {
   }
 }
 
-async function handleLogin() {
+async function handleLogin(payload: { username: string; password: string }) {
   busy.value = true
   successMessage.value = ''
 
   try {
     await authStore.login({
-      username: loginForm.username,
-      password: loginForm.password
+      username: payload.username,
+      password: payload.password
     })
     successMessage.value = t('auth.successLogin')
     await router.replace('/')
@@ -89,8 +73,8 @@ async function handleLogin() {
   }
 }
 
-async function handleRegister() {
-  if (registerForm.password !== registerForm.confirmPassword) {
+async function handleRegister(payload: RegisterPayload) {
+  if (payload.password !== payload.confirmPassword) {
     showToast(t('auth.passwordMismatch'), { type: 'error', position: 'top-center' })
     return
   }
@@ -99,11 +83,11 @@ async function handleRegister() {
   successMessage.value = ''
 
   try {
-    const email = registerForm.email.trim()
+    const email = payload.email.trim()
     await authStore.register({
-      username: registerForm.username,
+      username: payload.username,
       email: email ? email : null,
-      password: registerForm.password
+      password: payload.password
     })
     successMessage.value = t('auth.successRegister')
     await router.replace('/')
@@ -170,214 +154,19 @@ async function handleRegister() {
 
           <Tabs :model-value="mode" class="w-full">
             <TabsContent value="login" class="mt-0">
-              <form class="space-y-4" @submit.prevent="handleLogin">
-                <div class="space-y-2">
-                  <label class="text-sm font-medium text-foreground" for="login-username">{{
-                    t('auth.username')
-                  }}</label>
-                  <div class="relative">
-                    <User
-                      class="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground"
-                    />
-                    <Input
-                      id="login-username"
-                      v-model="loginForm.username"
-                      type="text"
-                      autocomplete="username"
-                      :placeholder="t('auth.usernamePlaceholder')"
-                      class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11 pr-4 shadow-none"
-                    />
-                  </div>
-                </div>
-
-                <div class="space-y-2">
-                  <div class="flex items-center justify-between gap-3">
-                    <label class="text-sm font-medium text-foreground" for="login-password">{{
-                      t('auth.password')
-                    }}</label>
-                    <Button variant="link" type="button" class="h-auto p-0 text-sm text-primary">
-                      {{ t('auth.forgotPassword') }}
-                    </Button>
-                  </div>
-                  <div class="relative">
-                    <Lock
-                      class="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground"
-                    />
-                    <Input
-                      id="login-password"
-                      v-model="loginForm.password"
-                      :type="showLoginPassword ? 'text' : 'password'"
-                      autocomplete="current-password"
-                      :placeholder="t('auth.passwordPlaceholder')"
-                      class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11 shadow-none"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      class="absolute right-2 top-1/2 h-9 w-9 -translate-y-1/2 rounded-full text-muted-foreground"
-                      :aria-label="
-                        showLoginPassword ? t('auth.hidePassword') : t('auth.showPassword')
-                      "
-                      @click="showLoginPassword = !showLoginPassword"
-                    >
-                      <Eye v-if="showLoginPassword" class="h-4 w-4" />
-                      <EyeOff v-else class="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-between gap-3 px-1">
-                  <label
-                    class="flex cursor-pointer items-center gap-3 text-sm text-muted-foreground select-none"
-                  >
-                    <input
-                      v-model="rememberDevice"
-                      type="checkbox"
-                      class="h-4 w-4 rounded border-border accent-[var(--primary)]"
-                    />
-                    <span>{{ t('auth.rememberDevice') }}</span>
-                  </label>
-                  <Button
-                    variant="link"
-                    type="button"
-                    class="h-auto p-0 text-sm text-primary"
-                    @click="router.push('/auth/register')"
-                  >
-                    注册本地账户
-                  </Button>
-                </div>
-
-                <Button
-                  type="submit"
-                  class="h-12 w-full rounded-[32px] text-sm font-semibold shadow-lg shadow-primary/25"
-                  :disabled="busy"
-                >
-                  {{ busy ? t('common.loading') : t('auth.login') }}
-                  <ArrowRight class="h-4 w-4" />
-                </Button>
-              </form>
+              <LoginForm
+                :busy="busy"
+                @submit="handleLogin"
+                @switch-register="router.push('/auth/register')"
+              />
             </TabsContent>
 
             <TabsContent value="register" class="mt-0">
-              <form class="space-y-4" @submit.prevent="handleRegister">
-                <div class="flex justify-end">
-                  <Button
-                    variant="link"
-                    type="button"
-                    class="h-auto p-0 text-sm text-primary"
-                    @click="router.push('/auth/login')"
-                  >
-                    返回登录
-                  </Button>
-                </div>
-                <div class="space-y-2">
-                  <label class="text-sm font-medium text-foreground" for="register-username">{{
-                    t('auth.username')
-                  }}</label>
-                  <div class="relative">
-                    <User
-                      class="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground"
-                    />
-                    <Input
-                      id="register-username"
-                      v-model="registerForm.username"
-                      autocomplete="username"
-                      :placeholder="t('auth.usernamePlaceholder')"
-                      class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11"
-                    />
-                  </div>
-                </div>
-
-                <div class="space-y-2">
-                  <label class="text-sm font-medium text-foreground" for="register-email">{{
-                    t('auth.email')
-                  }}</label>
-                  <Input
-                    id="register-email"
-                    v-model="registerForm.email"
-                    type="email"
-                    autocomplete="email"
-                    :placeholder="t('auth.emailPlaceholder')"
-                    class="h-12 rounded-xl border-border/70 bg-muted/35"
-                  />
-                </div>
-
-                <div class="space-y-2">
-                  <label class="text-sm font-medium text-foreground" for="register-password">{{
-                    t('auth.password')
-                  }}</label>
-                  <div class="relative">
-                    <Lock
-                      class="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground"
-                    />
-                    <Input
-                      id="register-password"
-                      v-model="registerForm.password"
-                      :type="showRegisterPassword ? 'text' : 'password'"
-                      autocomplete="new-password"
-                      :placeholder="t('auth.passwordPlaceholder')"
-                      class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      class="absolute right-2 top-1/2 h-9 w-9 -translate-y-1/2 rounded-full text-muted-foreground"
-                      :aria-label="
-                        showRegisterPassword ? t('auth.hidePassword') : t('auth.showPassword')
-                      "
-                      @click="showRegisterPassword = !showRegisterPassword"
-                    >
-                      <Eye v-if="showRegisterPassword" class="h-4 w-4" />
-                      <EyeOff v-else class="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div class="space-y-2">
-                  <label
-                    class="text-sm font-medium text-foreground"
-                    for="register-confirm-password"
-                    >{{ t('auth.confirmPassword') }}</label
-                  >
-                  <div class="relative">
-                    <Lock
-                      class="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground"
-                    />
-                    <Input
-                      id="register-confirm-password"
-                      v-model="registerForm.confirmPassword"
-                      :type="showConfirmPassword ? 'text' : 'password'"
-                      autocomplete="new-password"
-                      :placeholder="t('auth.confirmPasswordPlaceholder')"
-                      class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      class="absolute right-2 top-1/2 h-9 w-9 -translate-y-1/2 rounded-full text-muted-foreground"
-                      :aria-label="
-                        showConfirmPassword ? t('auth.hidePassword') : t('auth.showPassword')
-                      "
-                      @click="showConfirmPassword = !showConfirmPassword"
-                    >
-                      <Eye v-if="showConfirmPassword" class="h-4 w-4" />
-                      <EyeOff v-else class="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  class="h-12 w-full rounded-[32px] text-sm font-semibold shadow-lg shadow-primary/25"
-                  :disabled="busy"
-                >
-                  {{ busy ? t('common.loading') : t('auth.register') }}
-                  <ArrowRight class="h-4 w-4" />
-                </Button>
-              </form>
+              <RegisterForm
+                :busy="busy"
+                @submit="handleRegister"
+                @switch-login="router.push('/auth/login')"
+              />
             </TabsContent>
           </Tabs>
 
