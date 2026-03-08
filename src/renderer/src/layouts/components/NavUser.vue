@@ -7,7 +7,6 @@ import {
   Download,
   FolderOpen,
   Info,
-  Languages,
   LogOut,
   RefreshCw,
   Settings,
@@ -26,12 +25,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
@@ -40,7 +34,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { setAppLocale, type AppLocale } from '@/i18n'
 import { useAuthStore } from '@/store/auth'
 
 const props = defineProps<{
@@ -52,7 +45,7 @@ const props = defineProps<{
 }>()
 
 const { isMobile } = useSidebar()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const authStore = useAuthStore()
 const router = useRouter()
 const userInitials = computed(() => {
@@ -75,14 +68,6 @@ const userInitials = computed(() => {
 async function handleLogout() {
   await authStore.logout()
   await router.push({ name: 'login' })
-}
-
-async function handleLocaleChange(nextLocale: AppLocale) {
-  if (nextLocale === locale.value) {
-    return
-  }
-
-  await setAppLocale(nextLocale)
 }
 
 async function openAccountInfo() {
@@ -157,25 +142,6 @@ async function openAccountInfo() {
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <Languages />
-                {{ t('userMenu.languageBilingual') }}
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent class="min-w-44">
-                <DropdownMenuRadioGroup
-                  :model-value="locale"
-                  @update:model-value="value => handleLocaleChange(value as AppLocale)"
-                >
-                  <DropdownMenuRadioItem value="zh-CN">
-                    {{ t('userMenu.languageOptionZh') }}
-                  </DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="en-US">
-                    {{ t('userMenu.languageOptionEn') }}
-                  </DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
             <DropdownMenuItem>
               <RefreshCw />
               {{ t('userMenu.versionUpdate') }}
