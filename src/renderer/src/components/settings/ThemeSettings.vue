@@ -6,6 +6,9 @@ import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger
 } from '@/components/ui/sheet'
 import { Check, Minus, MonitorSmartphone, Moon, Palette, Plus, Sun, Type } from 'lucide-vue-next'
@@ -63,6 +66,11 @@ const sizePreviewText = computed(() => {
 
     <SheetContent class="w-[380px] border-l border-border/60 bg-background/95 px-0 sm:w-[440px]">
       <div class="flex h-full flex-col">
+        <SheetHeader class="sr-only">
+          <SheetTitle>主题设置</SheetTitle>
+          <SheetDescription>调整显示模式、主题色、字体和字号大小。</SheetDescription>
+        </SheetHeader>
+
         <div class="flex-1 space-y-6 overflow-y-auto px-6 py-6">
           <section class="space-y-4">
             <div class="space-y-1">
