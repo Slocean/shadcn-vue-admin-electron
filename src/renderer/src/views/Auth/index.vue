@@ -2,20 +2,20 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ArrowRight, Building2, Eye, EyeOff, Globe, Lock, ShieldCheck, User } from 'lucide-vue-next'
+import { ArrowRight, Building2, Eye, EyeOff, Lock, ShieldCheck, User } from 'lucide-vue-next'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import GlobalSystemControls from '@/layouts/components/GlobalSystemControls.vue'
 import { useAuthStore } from '@/store/auth'
-import { setAppLocale } from '@/i18n'
 
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 const mode = computed<'login' | 'register'>(() =>
   route.meta.authMode === 'register' ? 'register' : 'login'
@@ -122,9 +122,6 @@ async function handleRegister() {
   }
 }
 
-async function toggleLocale() {
-  await setAppLocale(locale.value === 'zh-CN' ? 'en-US' : 'zh-CN')
-}
 </script>
 
 <template>
@@ -153,10 +150,10 @@ async function toggleLocale() {
       >
         <CardContent class="p-0">
           <div class="flex justify-end">
-            <Button variant="ghost" size="sm" class="gap-2 rounded-full" @click="toggleLocale">
-              <Globe class="h-4 w-4" />
-              {{ locale === 'zh-CN' ? t('common.english') : t('common.chinese') }}
-            </Button>
+            <GlobalSystemControls
+              :show-always-on-top="false"
+              class="flex items-center gap-1"
+            />
           </div>
           <div class="mb-4 flex flex-col items-center text-center">
             <div

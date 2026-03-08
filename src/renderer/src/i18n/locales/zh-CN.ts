@@ -36,6 +36,30 @@ export default {
     securityHint: '密码修改功能预留中，后续将提供本地密码变更与安全校验。',
     changePassword: '修改密码（即将支持）'
   },
+  reportManagement: {
+    title: '报告管理'
+  },
+  patientManagement: {
+    title: '患者管理'
+  },
+  menuLab: {
+    title: '菜单层级测试'
+  },
+  menuLabReports: {
+    title: '报告中心'
+  },
+  menuLabPatients: {
+    title: '患者中心'
+  },
+  menuLabAdvanced: {
+    title: '高级分组'
+  },
+  menuLabAdvancedDaily: {
+    title: '日报'
+  },
+  menuLabAdvancedMonthly: {
+    title: '月报'
+  },
   login: {
     title: '登录'
   },

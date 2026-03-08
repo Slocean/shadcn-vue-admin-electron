@@ -36,6 +36,30 @@ export default {
     securityHint: 'Password change is reserved for a later release with local verification.',
     changePassword: 'Change password (Coming soon)'
   },
+  reportManagement: {
+    title: 'Report Management'
+  },
+  patientManagement: {
+    title: 'Patient Management'
+  },
+  menuLab: {
+    title: 'Menu Hierarchy Demo'
+  },
+  menuLabReports: {
+    title: 'Reports Center'
+  },
+  menuLabPatients: {
+    title: 'Patients Center'
+  },
+  menuLabAdvanced: {
+    title: 'Advanced Groups'
+  },
+  menuLabAdvancedDaily: {
+    title: 'Daily Report'
+  },
+  menuLabAdvancedMonthly: {
+    title: 'Monthly Report'
+  },
   login: {
     title: 'Login'
   },
