@@ -151,7 +151,7 @@ async function handleRegister() {
 
     <div :class="['app-region-no-drag relative z-10 w-full', authCardWidthClass]">
       <Card
-        class="overflow-hidden p-4 rounded-[1.75rem] border-border/70 bg-card/95 shadow-[0_24px_80px_-32px_color-mix(in_oklab,var(--foreground)_18%,transparent)] backdrop-blur"
+        class="overflow-hidden p-4 rounded-3xl border-border/70 bg-card/95 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.08)] backdrop-blur"
       >
         <CardContent class="p-0">
           <div class="mb-4 flex flex-col items-center text-center">
@@ -257,7 +257,7 @@ async function handleRegister() {
 
                 <Button
                   type="submit"
-                  class="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/20"
+                  class="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/25"
                   :disabled="busy"
                 >
                   {{ busy ? t('common.loading') : t('auth.login') }}
