@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
 import GlobalSystemControls from '@/layouts/components/GlobalSystemControls.vue'
 import { useAuthStore } from '@/store/auth'
 
@@ -19,6 +19,9 @@ const { t } = useI18n()
 
 const mode = computed<'login' | 'register'>(() =>
   route.meta.authMode === 'register' ? 'register' : 'login'
+)
+const authCardWidthClass = computed(() =>
+  mode.value === 'login' ? 'max-w-sm' : 'max-w-md'
 )
 const busy = ref(false)
 const successMessage = ref('')
@@ -42,10 +45,6 @@ const registerForm = reactive({
 watch(mode, () => {
   successMessage.value = ''
 })
-
-function handleModeChange(value: string | number) {
-  router.push(value === 'register' ? '/auth/register' : '/auth/login')
-}
 
 function formatAuthError(error: unknown) {
   if (!(error instanceof Error)) {
@@ -150,7 +149,7 @@ async function handleRegister() {
       />
     </div>
 
-    <div class="app-region-no-drag relative z-10 w-full max-w-md">
+    <div :class="['app-region-no-drag relative z-10 w-full', authCardWidthClass]">
       <Card
         class="overflow-hidden p-4 rounded-[1.75rem] border-border/70 bg-card/95 shadow-[0_24px_80px_-32px_color-mix(in_oklab,var(--foreground)_18%,transparent)] backdrop-blur"
       >
@@ -176,14 +175,7 @@ async function handleRegister() {
             {{ successMessage }}
           </p>
 
-          <Tabs :model-value="mode" class="w-full" @update:model-value="handleModeChange">
-            <TabsList class="mb-5 grid h-10 w-full grid-cols-2 rounded-full bg-muted/70 p-1">
-              <TabsTrigger value="login" class="rounded-full">{{ t('auth.loginTab') }}</TabsTrigger>
-              <TabsTrigger value="register" class="rounded-full">{{
-                t('auth.registerTab')
-              }}</TabsTrigger>
-            </TabsList>
-
+          <Tabs :model-value="mode" class="w-full">
             <TabsContent value="login" class="mt-0">
               <form class="space-y-4" @submit.prevent="handleLogin">
                 <div class="space-y-2">
@@ -242,16 +234,26 @@ async function handleRegister() {
                   </div>
                 </div>
 
-                <label
-                  class="flex cursor-pointer items-center gap-3 px-1 text-sm text-muted-foreground select-none"
-                >
-                  <input
-                    v-model="rememberDevice"
-                    type="checkbox"
-                    class="h-4 w-4 rounded border-border accent-[var(--primary)]"
-                  />
-                  <span>{{ t('auth.rememberDevice') }}</span>
-                </label>
+                <div class="flex items-center justify-between gap-3 px-1">
+                  <label
+                    class="flex cursor-pointer items-center gap-3 text-sm text-muted-foreground select-none"
+                  >
+                    <input
+                      v-model="rememberDevice"
+                      type="checkbox"
+                      class="h-4 w-4 rounded border-border accent-[var(--primary)]"
+                    />
+                    <span>{{ t('auth.rememberDevice') }}</span>
+                  </label>
+                  <Button
+                    variant="link"
+                    type="button"
+                    class="h-auto p-0 text-sm text-primary"
+                    @click="router.push('/auth/register')"
+                  >
+                    注册本地账户
+                  </Button>
+                </div>
 
                 <Button
                   type="submit"
@@ -266,6 +268,16 @@ async function handleRegister() {
 
             <TabsContent value="register" class="mt-0">
               <form class="space-y-3.5" @submit.prevent="handleRegister">
+                <div class="flex justify-end">
+                  <Button
+                    variant="link"
+                    type="button"
+                    class="h-auto p-0 text-sm text-primary"
+                    @click="router.push('/auth/login')"
+                  >
+                    返回登录
+                  </Button>
+                </div>
                 <div class="space-y-2">
                   <label class="text-sm font-medium text-foreground" for="register-username">{{
                     t('auth.username')
