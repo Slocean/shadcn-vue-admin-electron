@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useThemeStore, themes, fonts, type ThemeColor, type ThemeFont, type ThemeMode } from '@/store/theme'
+import {
+  useThemeStore,
+  themes,
+  fonts,
+  type ThemeColor,
+  type ThemeFont,
+  type ThemeMode
+} from '@/store/theme'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -36,8 +43,12 @@ const modeOptions = computed(() => [
   }
 ])
 
-const themeEntries = computed(() => Object.entries(themes) as [ThemeColor, (typeof themes)[ThemeColor]][])
-const fontEntries = computed(() => Object.entries(fonts) as [ThemeFont, (typeof fonts)[ThemeFont]][])
+const themeEntries = computed(
+  () => Object.entries(themes) as [ThemeColor, (typeof themes)[ThemeColor]][]
+)
+const fontEntries = computed(
+  () => Object.entries(fonts) as [ThemeFont, (typeof fonts)[ThemeFont]][]
+)
 
 function getColorValue(color: ThemeColor) {
   const theme = themes[color]
@@ -57,11 +68,7 @@ const sizePreviewText = computed(() => {
 <template>
   <Sheet>
     <SheetTrigger as-child>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        class="h-8 w-8 rounded-md hover:bg-accent/80"
-      >
+      <Button variant="ghost" size="icon-sm" class="h-8 w-8 rounded-md hover:bg-accent/80">
         <Palette class="h-4 w-4" />
         <span class="sr-only">{{ t('themeSettings.open') }}</span>
       </Button>
@@ -77,7 +84,9 @@ const sizePreviewText = computed(() => {
         <div class="flex-1 space-y-6 overflow-y-auto px-6 py-6">
           <section class="space-y-4">
             <div class="space-y-1">
-              <h3 class="text-sm font-semibold tracking-wide">{{ t('themeSettings.modeTitle') }}</h3>
+              <h3 class="text-sm font-semibold tracking-wide">
+                {{ t('themeSettings.modeTitle') }}
+              </h3>
             </div>
 
             <div class="grid grid-cols-3 gap-3">
@@ -96,7 +105,12 @@ const sizePreviewText = computed(() => {
               >
                 <component
                   :is="option.icon"
-                  :class="cn('h-4 w-4 text-muted-foreground transition-colors', themeStore.mode === option.value && 'text-primary')"
+                  :class="
+                    cn(
+                      'h-4 w-4 text-muted-foreground transition-colors',
+                      themeStore.mode === option.value && 'text-primary'
+                    )
+                  "
                 />
                 <span class="truncate text-sm font-medium text-foreground">{{ option.title }}</span>
                 <Check
@@ -111,7 +125,9 @@ const sizePreviewText = computed(() => {
 
           <section class="space-y-4">
             <div class="space-y-1">
-              <h3 class="text-sm font-semibold tracking-wide">{{ t('themeSettings.colorTitle') }}</h3>
+              <h3 class="text-sm font-semibold tracking-wide">
+                {{ t('themeSettings.colorTitle') }}
+              </h3>
             </div>
 
             <div class="grid grid-cols-3 gap-2.5">
@@ -132,7 +148,9 @@ const sizePreviewText = computed(() => {
                   <div class="relative shrink-0">
                     <span
                       class="flex h-9 w-9 items-center justify-center rounded-xl border border-white/50 shadow-sm ring-1 ring-black/5 dark:border-white/10"
-                      :style="{ background: `linear-gradient(135deg, ${getColorValue(key)} 0%, color-mix(in oklab, ${getColorValue(key)} 70%, white) 100%)` }"
+                      :style="{
+                        background: `linear-gradient(135deg, ${getColorValue(key)} 0%, color-mix(in oklab, ${getColorValue(key)} 70%, white) 100%)`
+                      }"
                     >
                       <span class="h-2.5 w-2.5 rounded-full bg-white/90 shadow-sm"></span>
                     </span>
@@ -145,7 +163,9 @@ const sizePreviewText = computed(() => {
                   </div>
 
                   <div class="min-w-0 flex-1">
-                    <div class="truncate text-sm font-medium text-foreground">{{ t(`themeSettings.colors.${key}`) }}</div>
+                    <div class="truncate text-sm font-medium text-foreground">
+                      {{ t(`themeSettings.colors.${key}`) }}
+                    </div>
                     <div class="mt-0.5 truncate text-[11px] text-muted-foreground">{{ key }}</div>
                   </div>
                 </div>
@@ -157,7 +177,9 @@ const sizePreviewText = computed(() => {
 
           <section class="space-y-4">
             <div class="space-y-1">
-              <h3 class="text-sm font-semibold tracking-wide">{{ t('themeSettings.fontTitle') }}</h3>
+              <h3 class="text-sm font-semibold tracking-wide">
+                {{ t('themeSettings.fontTitle') }}
+              </h3>
             </div>
 
             <div class="grid grid-cols-2 gap-2.5">
@@ -176,12 +198,20 @@ const sizePreviewText = computed(() => {
               >
                 <div class="flex items-start justify-between gap-2">
                   <div class="min-w-0 flex-1">
-                    <div class="truncate text-sm font-medium text-foreground">{{ t(`themeSettings.fonts.${key}.label`) }}</div>
-                    <div class="mt-2 line-clamp-2 text-sm text-foreground/90" :style="{ fontFamily: font.family }">
+                    <div class="truncate text-sm font-medium text-foreground">
+                      {{ t(`themeSettings.fonts.${key}.label`) }}
+                    </div>
+                    <div
+                      class="mt-2 line-clamp-2 text-sm text-foreground/90"
+                      :style="{ fontFamily: font.family }"
+                    >
                       {{ t(`themeSettings.fonts.${key}.preview`) }}
                     </div>
                   </div>
-                  <Check v-if="themeStore.fontFamily === key" class="h-4 w-4 shrink-0 text-primary" />
+                  <Check
+                    v-if="themeStore.fontFamily === key"
+                    class="h-4 w-4 shrink-0 text-primary"
+                  />
                 </div>
               </button>
             </div>
@@ -191,7 +221,9 @@ const sizePreviewText = computed(() => {
 
           <section class="space-y-4">
             <div class="space-y-1">
-              <h3 class="text-sm font-semibold tracking-wide">{{ t('themeSettings.sizeTitle') }}</h3>
+              <h3 class="text-sm font-semibold tracking-wide">
+                {{ t('themeSettings.sizeTitle') }}
+              </h3>
             </div>
 
             <div class="rounded-2xl border border-border/70 bg-card/70 p-3 shadow-sm">
@@ -201,7 +233,9 @@ const sizePreviewText = computed(() => {
                     <Type class="h-4 w-4" />
                     <span>{{ sizePreviewText }}</span>
                   </div>
-                  <p class="mt-1 text-xs text-muted-foreground">{{ t('themeSettings.size.hint') }}</p>
+                  <p class="mt-1 text-xs text-muted-foreground">
+                    {{ t('themeSettings.size.hint') }}
+                  </p>
                 </div>
 
                 <div class="flex items-center gap-2">
@@ -236,7 +270,9 @@ const sizePreviewText = computed(() => {
               </div>
 
               <div class="mt-3 rounded-xl bg-muted/40 p-3">
-                <div class="text-xs text-muted-foreground">{{ t('themeSettings.size.preview') }}</div>
+                <div class="text-xs text-muted-foreground">
+                  {{ t('themeSettings.size.preview') }}
+                </div>
                 <div class="mt-2 flex items-end gap-3">
                   <span class="text-xs">12px {{ t('themeSettings.size.sampleText') }}</span>
                   <span class="text-sm">14px {{ t('themeSettings.size.sampleText') }}</span>
