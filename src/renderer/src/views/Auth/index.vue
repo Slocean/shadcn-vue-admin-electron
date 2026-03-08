@@ -2,8 +2,8 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ArrowRight, Building2, Eye, EyeOff, Lock, ShieldCheck, User } from 'lucide-vue-next'
-import { toast } from '@/components/ui/sonner'
+import { ArrowRight, Building2, Eye, EyeOff, Lock, User } from 'lucide-vue-next'
+import { showToast } from '@/components/ui/sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -87,7 +87,7 @@ async function handleLogin() {
     successMessage.value = t('auth.successLogin')
     await router.replace('/')
   } catch (error) {
-    toast.error(formatAuthError(error))
+    showToast(formatAuthError(error), { type: 'error', position: 'top-center' })
   } finally {
     busy.value = false
   }
@@ -95,7 +95,7 @@ async function handleLogin() {
 
 async function handleRegister() {
   if (registerForm.password !== registerForm.confirmPassword) {
-    toast.error(t('auth.passwordMismatch'))
+    showToast(t('auth.passwordMismatch'), { type: 'error', position: 'top-center' })
     return
   }
 
@@ -112,7 +112,7 @@ async function handleRegister() {
     successMessage.value = t('auth.successRegister')
     await router.replace('/')
   } catch (error) {
-    toast.error(formatAuthError(error))
+    showToast(formatAuthError(error), { type: 'error', position: 'top-center' })
   } finally {
     busy.value = false
   }
