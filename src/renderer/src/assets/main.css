@@ -103,10 +103,10 @@
 
 :root.dark[data-theme="red"] {
   --primary: oklch(0.637 0.237 25.331);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
   --ring: oklch(0.637 0.237 25.331);
   --sidebar-primary: oklch(0.637 0.237 25.331);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.205 0 0);
 }
 
 :root[data-theme="blue"] {
@@ -127,34 +127,34 @@
 
 :root[data-theme="green"] {
   --primary: oklch(0.5 0.2 140);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
   --ring: oklch(0.5 0.2 140);
   --sidebar-primary: oklch(0.5 0.2 140);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.205 0 0);
 }
 
 :root.dark[data-theme="green"] {
   --primary: oklch(0.723 0.219 149.579);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.145 0 0);
   --ring: oklch(0.723 0.219 149.579);
   --sidebar-primary: oklch(0.723 0.219 149.579);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.145 0 0);
 }
 
 :root[data-theme="orange"] {
   --primary: oklch(0.6 0.2 50);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
   --ring: oklch(0.6 0.2 50);
   --sidebar-primary: oklch(0.6 0.2 50);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.205 0 0);
 }
 
 :root.dark[data-theme="orange"] {
   --primary: oklch(0.705 0.213 47.604);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.145 0 0);
   --ring: oklch(0.705 0.213 47.604);
   --sidebar-primary: oklch(0.705 0.213 47.604);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.145 0 0);
 }
 
 :root[data-theme="yellow"] {
@@ -167,10 +167,10 @@
 
 :root.dark[data-theme="yellow"] {
   --primary: oklch(0.795 0.184 86.047);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.145 0 0);
   --ring: oklch(0.795 0.184 86.047);
   --sidebar-primary: oklch(0.795 0.184 86.047);
-  --sidebar-primary-foreground: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.145 0 0);
 }
 
 :root[data-theme="violet"] {
