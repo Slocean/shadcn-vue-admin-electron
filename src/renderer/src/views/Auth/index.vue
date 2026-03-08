@@ -3,7 +3,7 @@ import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ArrowRight, Building2, Eye, EyeOff, Lock, ShieldCheck, User } from 'lucide-vue-next'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { toast } from '@/components/ui/sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -21,7 +21,6 @@ const mode = computed<'login' | 'register'>(() =>
   route.meta.authMode === 'register' ? 'register' : 'login'
 )
 const busy = ref(false)
-const errorMessage = ref('')
 const successMessage = ref('')
 const showLoginPassword = ref(false)
 const showRegisterPassword = ref(false)
@@ -41,7 +40,6 @@ const registerForm = reactive({
 })
 
 watch(mode, () => {
-  errorMessage.value = ''
   successMessage.value = ''
 })
 
@@ -79,7 +77,6 @@ function formatAuthError(error: unknown) {
 
 async function handleLogin() {
   busy.value = true
-  errorMessage.value = ''
   successMessage.value = ''
 
   try {
@@ -90,7 +87,7 @@ async function handleLogin() {
     successMessage.value = t('auth.successLogin')
     await router.replace('/')
   } catch (error) {
-    errorMessage.value = formatAuthError(error)
+    toast.error(formatAuthError(error))
   } finally {
     busy.value = false
   }
@@ -98,12 +95,11 @@ async function handleLogin() {
 
 async function handleRegister() {
   if (registerForm.password !== registerForm.confirmPassword) {
-    errorMessage.value = t('auth.passwordMismatch')
+    toast.error(t('auth.passwordMismatch'))
     return
   }
 
   busy.value = true
-  errorMessage.value = ''
   successMessage.value = ''
 
   try {
@@ -116,7 +112,7 @@ async function handleRegister() {
     successMessage.value = t('auth.successRegister')
     await router.replace('/')
   } catch (error) {
-    errorMessage.value = formatAuthError(error)
+    toast.error(formatAuthError(error))
   } finally {
     busy.value = false
   }
@@ -173,12 +169,12 @@ async function handleRegister() {
             </p>
           </div>
 
-          <Alert v-if="errorMessage" variant="destructive" class="mb-4">
-            <AlertDescription>{{ errorMessage }}</AlertDescription>
-          </Alert>
-          <Alert v-else-if="successMessage" class="mb-4 border-primary/30 text-foreground">
-            <AlertDescription>{{ successMessage }}</AlertDescription>
-          </Alert>
+          <p
+            v-if="successMessage"
+            class="mb-4 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-foreground"
+          >
+            {{ successMessage }}
+          </p>
 
           <Tabs :model-value="mode" class="w-full" @update:model-value="handleModeChange">
             <TabsList class="mb-5 grid h-10 w-full grid-cols-2 rounded-full bg-muted/70 p-1">
