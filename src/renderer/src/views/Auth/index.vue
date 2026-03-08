@@ -111,14 +111,14 @@ async function handleRegister(payload: RegisterPayload) {
     </div>
 
     <div class="pointer-events-none absolute inset-0 overflow-hidden">
-      <div class="absolute -left-24 top-12 h-72 w-72 rounded-full bg-primary/8 blur-3xl" />
-      <div class="absolute -right-24 bottom-8 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+      <div class="absolute -left-24 top-12 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+      <div class="absolute -right-24 bottom-8 h-80 w-80 rounded-full bg-primary/12 blur-3xl" />
       <div
-        class="absolute inset-0 opacity-40"
+        class="absolute inset-0 opacity-48"
         style="
           background-image: radial-gradient(
             circle at 1px 1px,
-            color-mix(in oklab, var(--primary) 14%, transparent) 1px,
+            color-mix(in oklab, var(--primary) 18%, transparent) 1px,
             transparent 0
           );
           background-size: 40px 40px;
