@@ -145,7 +145,7 @@ async function handleRegister() {
 
     <div :class="['app-region-no-drag relative z-10 w-full', authCardWidthClass]">
       <Card
-        class="overflow-hidden p-4 rounded-3xl border-border/70 bg-card/95 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.08)] backdrop-blur"
+        class="overflow-hidden p-8 rounded-[15px] border-border/70 bg-card/95 shadow-[0_30px_70px_-18px_rgba(0,0,0,0.18)] backdrop-blur"
       >
         <CardContent class="p-0">
           <div class="mb-4 flex flex-col items-center text-center">
