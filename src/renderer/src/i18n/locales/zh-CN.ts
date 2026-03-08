@@ -25,6 +25,17 @@ export default {
   about: {
     title: '关于'
   },
+  accountInfo: {
+    title: '账户信息',
+    subtitle: '查看当前登录账户的基础资料与安全状态。',
+    basicInfo: '基础信息',
+    username: '用户名',
+    email: '邮箱',
+    createdAt: '创建时间',
+    security: '账户安全',
+    securityHint: '密码修改功能预留中，后续将提供本地密码变更与安全校验。',
+    changePassword: '修改密码（即将支持）'
+  },
   login: {
     title: '登录'
   },

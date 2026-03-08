@@ -25,6 +25,17 @@ export default {
   about: {
     title: 'About'
   },
+  accountInfo: {
+    title: 'Account Info',
+    subtitle: 'Review profile details and account security for the current user.',
+    basicInfo: 'Basic info',
+    username: 'Username',
+    email: 'Email',
+    createdAt: 'Created at',
+    security: 'Security',
+    securityHint: 'Password change is reserved for a later release with local verification.',
+    changePassword: 'Change password (Coming soon)'
+  },
   login: {
     title: 'Login'
   },

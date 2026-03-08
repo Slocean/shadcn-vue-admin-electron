@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import { useAuthStore } from '@/store/auth'
-import { ClipboardList, Layers3, Users } from 'lucide-vue-next'
+import { ClipboardList, Layers3, User, Users } from 'lucide-vue-next'
 
 export const appRoutes: RouteRecordRaw[] = [
   {
@@ -46,6 +46,18 @@ export const appRoutes: RouteRecordRaw[] = [
     meta: {
       title: 'About',
       navGroup: 'Workspace',
+      requiresAuth: true,
+      layout: 'app'
+    }
+  },
+  {
+    path: '/account-info',
+    name: 'accountInfo',
+    component: () => import('../views/AccountInfo.vue'),
+    meta: {
+      title: '账户信息',
+      navGroup: '账户',
+      navIcon: User,
       requiresAuth: true,
       layout: 'app'
     }

@@ -84,6 +84,10 @@ async function handleLocaleChange(nextLocale: AppLocale) {
 
   await setAppLocale(nextLocale)
 }
+
+async function openAccountInfo() {
+  await router.push({ name: 'accountInfo' })
+}
 </script>
 
 <template>
@@ -130,7 +134,7 @@ async function handleLocaleChange(nextLocale: AppLocale) {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
+            <DropdownMenuItem @click="openAccountInfo">
               <User />
               {{ t('userMenu.accountInfo') }}
             </DropdownMenuItem>
