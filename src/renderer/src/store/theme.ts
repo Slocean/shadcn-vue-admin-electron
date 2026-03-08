@@ -83,8 +83,7 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
 export const fonts: Record<ThemeFont, FontConfig> = {
   system: {
     label: '系统默认',
-    family:
-      'Inter, "SF Pro Display", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", sans-serif',
+    family: 'Inter, sans-serif',
     preview: '界面清晰，适合日常使用'
   },
   yahei: {
@@ -178,9 +177,13 @@ export const useThemeStore = defineStore('theme', () => {
     }
   }
 
-  watch([mode, themeColor, resolvedMode, fontFamily, fontSizeOffset], () => {
-    applyTheme()
-  }, { immediate: true })
+  watch(
+    [mode, themeColor, resolvedMode, fontFamily, fontSizeOffset],
+    () => {
+      applyTheme()
+    },
+    { immediate: true }
+  )
 
   return {
     mode,

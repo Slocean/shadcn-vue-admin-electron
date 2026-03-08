@@ -20,9 +20,7 @@ const { t } = useI18n()
 const mode = computed<'login' | 'register'>(() =>
   route.meta.authMode === 'register' ? 'register' : 'login'
 )
-const authCardWidthClass = computed(() =>
-  mode.value === 'login' ? 'max-w-sm' : 'max-w-md'
-)
+const authCardWidthClass = computed(() => (mode.value === 'login' ? 'max-w-sm' : 'max-w-md'))
 const busy = ref(false)
 const successMessage = ref('')
 const showLoginPassword = ref(false)
@@ -116,7 +114,6 @@ async function handleRegister() {
     busy.value = false
   }
 }
-
 </script>
 
 <template>
@@ -126,10 +123,7 @@ async function handleRegister() {
     <div class="app-region-drag absolute inset-x-0 top-0 z-20 flex h-14 items-center px-4">
       <div class="flex-1"></div>
       <div class="app-region-no-drag flex items-center">
-        <GlobalSystemControls
-          :show-always-on-top="false"
-          class="flex items-center gap-1"
-        />
+        <GlobalSystemControls :show-always-on-top="false" class="flex items-center gap-1" />
       </div>
     </div>
 
@@ -156,7 +150,7 @@ async function handleRegister() {
         <CardContent class="p-0">
           <div class="mb-4 flex flex-col items-center text-center">
             <div
-              class="mb-0 flex size-14 items-center justify-center rounded-[1.125rem] bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+              class="mb-3 flex size-14 items-center justify-center rounded-[1.125rem] bg-primary text-primary-foreground shadow-lg shadow-primary/20"
             >
               <Building2 class="h-8 w-8" />
             </div>
@@ -257,7 +251,7 @@ async function handleRegister() {
 
                 <Button
                   type="submit"
-                  class="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/25"
+                  class="h-12 w-full rounded-[32px] text-sm font-semibold shadow-lg shadow-primary/25"
                   :disabled="busy"
                 >
                   {{ busy ? t('common.loading') : t('auth.login') }}
