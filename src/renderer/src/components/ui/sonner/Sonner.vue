@@ -16,10 +16,13 @@ const mergedProps = computed<ToasterProps>(() => ({
   toastOptions: {
     ...props.toastOptions,
     classes: {
+      toast: "pr-10 app-region-no-drag",
       success: "border-emerald-500/40 bg-emerald-500 text-white",
       info: "border-sky-500/40 bg-sky-500 text-white",
       warning: "border-amber-500/40 bg-amber-500 text-black",
       error: "border-rose-500/40 bg-rose-500 text-white",
+      closeButton:
+        "!left-auto !right-3 !top-1/2 !bottom-auto !-translate-y-1/2 !translate-x-0 !transform app-region-no-drag",
       ...(props.toastOptions?.classes ?? {}),
     },
   },
@@ -28,7 +31,7 @@ const mergedProps = computed<ToasterProps>(() => ({
 
 <template>
   <Sonner
-    :class="cn('toaster group', props.class)"
+    :class="cn('toaster group app-region-no-drag', props.class)"
     :style="{
       '--normal-bg': 'var(--popover)',
       '--normal-text': 'var(--popover-foreground)',
