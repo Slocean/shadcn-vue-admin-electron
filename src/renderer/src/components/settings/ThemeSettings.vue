@@ -74,7 +74,10 @@ const sizePreviewText = computed(() => {
       </Button>
     </SheetTrigger>
 
-    <SheetContent class="w-[380px] border-l border-border/60 bg-background/95 px-0 sm:w-[440px]">
+    <SheetContent
+      max-width-class="sm:max-w-[420px]"
+      class="w-[420px] border-l border-border/60 bg-background/95 px-0 sm:w-[420px]"
+    >
       <div class="flex h-full flex-col">
         <SheetHeader class="sr-only">
           <SheetTitle>{{ t('themeSettings.title') }}</SheetTitle>
