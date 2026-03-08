@@ -128,6 +128,13 @@ async function handleRegister() {
   <div
     class="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-8"
   >
+    <div class="absolute top-4 right-4 z-20">
+      <GlobalSystemControls
+        :show-always-on-top="false"
+        class="flex items-center gap-1"
+      />
+    </div>
+
     <div class="pointer-events-none absolute inset-0 overflow-hidden">
       <div class="absolute -left-24 top-12 h-72 w-72 rounded-full bg-primary/8 blur-3xl" />
       <div class="absolute -right-24 bottom-8 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
@@ -149,12 +156,6 @@ async function handleRegister() {
         class="overflow-hidden p-4 rounded-[1.75rem] border-border/70 bg-card/95 shadow-[0_24px_80px_-32px_color-mix(in_oklab,var(--foreground)_18%,transparent)] backdrop-blur"
       >
         <CardContent class="p-0">
-          <div class="flex justify-end">
-            <GlobalSystemControls
-              :show-always-on-top="false"
-              class="flex items-center gap-1"
-            />
-          </div>
           <div class="mb-4 flex flex-col items-center text-center">
             <div
               class="mb-0 flex size-14 items-center justify-center rounded-[1.125rem] bg-primary text-primary-foreground shadow-lg shadow-primary/20"
