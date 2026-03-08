@@ -126,7 +126,7 @@ async function handleRegister() {
 
 <template>
   <div
-    class="app-region-drag relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-8"
+    class="app-region-no-drag relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-8"
   >
     <div class="app-region-drag absolute inset-x-0 top-0 z-20 flex h-14 items-center px-4">
       <div class="flex-1"></div>
