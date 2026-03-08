@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useThemeStore, themes, fonts, type ThemeColor, type ThemeFont, type ThemeMode } from '@/store/theme'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -15,24 +16,25 @@ import { Check, Minus, MonitorSmartphone, Moon, Palette, Plus, Sun, Type } from 
 import { Separator } from '@/components/ui/separator'
 
 const themeStore = useThemeStore()
+const { t } = useI18n()
 
-const modeOptions = [
+const modeOptions = computed(() => [
   {
     value: 'light' as ThemeMode,
-    title: '浅色',
+    title: t('themeSettings.mode.light'),
     icon: Sun
   },
   {
     value: 'dark' as ThemeMode,
-    title: '深色',
+    title: t('themeSettings.mode.dark'),
     icon: Moon
   },
   {
     value: 'system' as ThemeMode,
-    title: '跟随系统',
+    title: t('themeSettings.mode.system'),
     icon: MonitorSmartphone
   }
-]
+])
 
 const themeEntries = computed(() => Object.entries(themes) as [ThemeColor, (typeof themes)[ThemeColor]][])
 const fontEntries = computed(() => Object.entries(fonts) as [ThemeFont, (typeof fonts)[ThemeFont]][])
@@ -44,10 +46,11 @@ function getColorValue(color: ThemeColor) {
 
 const sizePreviewText = computed(() => {
   if (themeStore.fontSizeOffset === 0) {
-    return '当前：默认字号'
+    return t('themeSettings.size.currentDefault')
   }
 
-  return `当前：${themeStore.fontSizeOffset > 0 ? '+' : ''}${themeStore.fontSizeOffset}px`
+  const offset = `${themeStore.fontSizeOffset > 0 ? '+' : ''}${themeStore.fontSizeOffset}`
+  return t('themeSettings.size.currentOffset', { offset })
 })
 </script>
 
@@ -60,21 +63,21 @@ const sizePreviewText = computed(() => {
         class="h-8 w-8 rounded-md hover:bg-accent/80"
       >
         <Palette class="h-4 w-4" />
-        <span class="sr-only">打开主题设置</span>
+        <span class="sr-only">{{ t('themeSettings.open') }}</span>
       </Button>
     </SheetTrigger>
 
     <SheetContent class="w-[380px] border-l border-border/60 bg-background/95 px-0 sm:w-[440px]">
       <div class="flex h-full flex-col">
         <SheetHeader class="sr-only">
-          <SheetTitle>主题设置</SheetTitle>
-          <SheetDescription>调整显示模式、主题色、字体和字号大小。</SheetDescription>
+          <SheetTitle>{{ t('themeSettings.title') }}</SheetTitle>
+          <SheetDescription>{{ t('themeSettings.description') }}</SheetDescription>
         </SheetHeader>
 
         <div class="flex-1 space-y-6 overflow-y-auto px-6 py-6">
           <section class="space-y-4">
             <div class="space-y-1">
-              <h3 class="text-sm font-semibold tracking-wide">显示模式</h3>
+              <h3 class="text-sm font-semibold tracking-wide">{{ t('themeSettings.modeTitle') }}</h3>
             </div>
 
             <div class="grid grid-cols-3 gap-3">
@@ -108,7 +111,7 @@ const sizePreviewText = computed(() => {
 
           <section class="space-y-4">
             <div class="space-y-1">
-              <h3 class="text-sm font-semibold tracking-wide">主题色</h3>
+              <h3 class="text-sm font-semibold tracking-wide">{{ t('themeSettings.colorTitle') }}</h3>
             </div>
 
             <div class="grid grid-cols-3 gap-2.5">
@@ -142,7 +145,7 @@ const sizePreviewText = computed(() => {
                   </div>
 
                   <div class="min-w-0 flex-1">
-                    <div class="truncate text-sm font-medium text-foreground">{{ theme.label }}</div>
+                    <div class="truncate text-sm font-medium text-foreground">{{ t(`themeSettings.colors.${key}`) }}</div>
                     <div class="mt-0.5 truncate text-[11px] text-muted-foreground">{{ key }}</div>
                   </div>
                 </div>
@@ -154,7 +157,7 @@ const sizePreviewText = computed(() => {
 
           <section class="space-y-4">
             <div class="space-y-1">
-              <h3 class="text-sm font-semibold tracking-wide">字体</h3>
+              <h3 class="text-sm font-semibold tracking-wide">{{ t('themeSettings.fontTitle') }}</h3>
             </div>
 
             <div class="grid grid-cols-2 gap-2.5">
@@ -173,9 +176,9 @@ const sizePreviewText = computed(() => {
               >
                 <div class="flex items-start justify-between gap-2">
                   <div class="min-w-0 flex-1">
-                    <div class="truncate text-sm font-medium text-foreground">{{ font.label }}</div>
+                    <div class="truncate text-sm font-medium text-foreground">{{ t(`themeSettings.fonts.${key}.label`) }}</div>
                     <div class="mt-2 line-clamp-2 text-sm text-foreground/90" :style="{ fontFamily: font.family }">
-                      预览 Aa 字体效果
+                      {{ t(`themeSettings.fonts.${key}.preview`) }}
                     </div>
                   </div>
                   <Check v-if="themeStore.fontFamily === key" class="h-4 w-4 shrink-0 text-primary" />
@@ -188,7 +191,7 @@ const sizePreviewText = computed(() => {
 
           <section class="space-y-4">
             <div class="space-y-1">
-              <h3 class="text-sm font-semibold tracking-wide">字号大小</h3>
+              <h3 class="text-sm font-semibold tracking-wide">{{ t('themeSettings.sizeTitle') }}</h3>
             </div>
 
             <div class="rounded-2xl border border-border/70 bg-card/70 p-3 shadow-sm">
@@ -198,7 +201,7 @@ const sizePreviewText = computed(() => {
                     <Type class="h-4 w-4" />
                     <span>{{ sizePreviewText }}</span>
                   </div>
-                  <p class="mt-1 text-xs text-muted-foreground">所有固定字号会在原有基础上同步偏移</p>
+                  <p class="mt-1 text-xs text-muted-foreground">{{ t('themeSettings.size.hint') }}</p>
                 </div>
 
                 <div class="flex items-center gap-2">
@@ -210,14 +213,14 @@ const sizePreviewText = computed(() => {
                     @click="themeStore.setFontSizeOffset(themeStore.fontSizeOffset - 1)"
                   >
                     <Minus class="h-4 w-4" />
-                    <span class="sr-only">减小字号</span>
+                    <span class="sr-only">{{ t('themeSettings.size.decrease') }}</span>
                   </Button>
                   <Button
                     variant="outline"
                     class="h-8 rounded-md px-3 text-sm"
                     @click="themeStore.setFontSizeOffset(0)"
                   >
-                    重置
+                    {{ t('themeSettings.size.reset') }}
                   </Button>
                   <Button
                     variant="outline"
@@ -227,17 +230,17 @@ const sizePreviewText = computed(() => {
                     @click="themeStore.setFontSizeOffset(themeStore.fontSizeOffset + 1)"
                   >
                     <Plus class="h-4 w-4" />
-                    <span class="sr-only">增大字号</span>
+                    <span class="sr-only">{{ t('themeSettings.size.increase') }}</span>
                   </Button>
                 </div>
               </div>
 
               <div class="mt-3 rounded-xl bg-muted/40 p-3">
-                <div class="text-xs text-muted-foreground">预览</div>
+                <div class="text-xs text-muted-foreground">{{ t('themeSettings.size.preview') }}</div>
                 <div class="mt-2 flex items-end gap-3">
-                  <span class="text-xs">12px 文本</span>
-                  <span class="text-sm">14px 文本</span>
-                  <span class="text-base">16px 文本</span>
+                  <span class="text-xs">12px {{ t('themeSettings.size.sampleText') }}</span>
+                  <span class="text-sm">14px {{ t('themeSettings.size.sampleText') }}</span>
+                  <span class="text-base">16px {{ t('themeSettings.size.sampleText') }}</span>
                 </div>
               </div>
             </div>

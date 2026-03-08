@@ -51,7 +51,7 @@ function handleSubmit() {
         class="h-auto p-0 text-sm text-primary"
         @click="emit('switch-login')"
       >
-        返回登录
+        {{ t('auth.backToLogin') }}
       </Button>
     </div>
 

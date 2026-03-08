@@ -66,13 +66,64 @@ export default {
   register: {
     title: '注册'
   },
+  themeSettings: {
+    open: '打开主题设置',
+    title: '主题设置',
+    description: '调整显示模式、主题色、字体和字号大小。',
+    modeTitle: '显示模式',
+    mode: {
+      light: '浅色',
+      dark: '深色',
+      system: '跟随系统'
+    },
+    colorTitle: '主题色',
+    colors: {
+      zinc: '锌灰',
+      red: '红色',
+      blue: '蓝色',
+      green: '绿色',
+      orange: '橙色',
+      yellow: '黄色',
+      violet: '紫色'
+    },
+    fontTitle: '字体',
+    fonts: {
+      system: {
+        label: '系统默认',
+        preview: '界面清晰，适合日常使用'
+      },
+      yahei: {
+        label: '微软雅黑',
+        preview: '中文显示更圆润'
+      },
+      dengxian: {
+        label: '等线',
+        preview: '现代简洁，字形利落'
+      },
+      songti: {
+        label: '宋体',
+        preview: '传统衬线，适合阅读'
+      },
+      kaiti: {
+        label: '楷体',
+        preview: '书卷风格，更有辨识度'
+      }
+    },
+    sizeTitle: '字号大小',
+    size: {
+      currentDefault: '当前：默认字号',
+      currentOffset: '当前：{offset}px',
+      hint: '所有固定字号会在原有基础上同步偏移',
+      decrease: '减小字号',
+      reset: '重置',
+      increase: '增大字号',
+      preview: '预览',
+      sampleText: '文本'
+    }
+  },
   auth: {
-    brand: '面向桌面应用的安全登录',
-    subtitle: '账号存于 SQLite，偏好设置存于 electron-conf。',
     welcomeBack: '欢迎回来',
     createAccount: '创建你的本地账户',
-    loginTab: '登录',
-    registerTab: '注册',
     username: '账号',
     usernamePlaceholder: '请输入账号',
     email: '邮箱（可选）',
@@ -83,17 +134,12 @@ export default {
     confirmPasswordPlaceholder: '请再次输入密码',
     login: '登录',
     register: '注册',
+    registerLocalAccount: '注册本地账户',
+    backToLogin: '返回登录',
     forgotPassword: '忘记密码？',
     rememberDevice: '记住这台设备',
-    secureAccess: '安全访问',
-    securityAes: '256 位 AES',
-    securityMfa: '支持多因素认证',
     support: '支持',
     privacy: '隐私',
-    noAccount: '还没有账号？',
-    hasAccount: '已有账号？',
-    switchToLogin: '去登录',
-    switchToRegister: '去注册',
     successLogin: '登录成功。',
     successRegister: '注册成功并已登录。',
     passwordMismatch: '两次输入的密码不一致。',
@@ -116,10 +162,9 @@ export default {
     dataRestore: '数据恢复',
     reportSettings: '报告设置',
     dataDirectory: '数据保存目录',
-    language: '语言',
-    languageBilingual: '语言/Language',
-    languageOptionZh: '中文/Chinese',
-    languageOptionEn: '英文/English',
+    languageBilingual: '语言',
+    languageOptionZh: '中文',
+    languageOptionEn: '英文',
     versionUpdate: '版本更新',
     aboutUs: '关于我们',
     logout: '退出登录'

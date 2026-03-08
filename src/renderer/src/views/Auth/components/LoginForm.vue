@@ -107,7 +107,7 @@ function handleSubmit() {
         class="h-auto p-0 text-sm text-primary"
         @click="emit('switch-register')"
       >
-        注册本地账户
+        {{ t('auth.registerLocalAccount') }}
       </Button>
     </div>
 

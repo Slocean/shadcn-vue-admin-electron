@@ -183,20 +183,6 @@ async function handleRegister(payload: RegisterPayload) {
                 </button>
               </div>
             </div>
-            <!-- <div class="pt-2 text-center">
-              <div
-                class="mt-2.5 flex items-center justify-center gap-4 text-[11px] text-muted-foreground"
-              >
-                <div class="flex items-center gap-1.5">
-                  <ShieldCheck class="h-3.5 w-3.5 text-primary" />
-                  <span>{{ t('auth.securityAes') }}</span>
-                </div>
-                <div class="flex items-center gap-1.5">
-                  <ShieldCheck class="h-3.5 w-3.5 text-primary" />
-                  <span>{{ t('auth.securityMfa') }}</span>
-                </div>
-              </div>
-            </div> -->
           </div>
         </CardContent>
       </Card>

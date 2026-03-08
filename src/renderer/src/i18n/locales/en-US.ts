@@ -66,13 +66,64 @@ export default {
   register: {
     title: 'Register'
   },
+  themeSettings: {
+    open: 'Open theme settings',
+    title: 'Theme settings',
+    description: 'Adjust display mode, theme color, font, and font size.',
+    modeTitle: 'Display mode',
+    mode: {
+      light: 'Light',
+      dark: 'Dark',
+      system: 'System'
+    },
+    colorTitle: 'Theme color',
+    colors: {
+      zinc: 'Zinc',
+      red: 'Red',
+      blue: 'Blue',
+      green: 'Green',
+      orange: 'Orange',
+      yellow: 'Yellow',
+      violet: 'Violet'
+    },
+    fontTitle: 'Font',
+    fonts: {
+      system: {
+        label: 'System',
+        preview: 'Clean and balanced for daily use'
+      },
+      yahei: {
+        label: 'YaHei',
+        preview: 'Softer Chinese glyph rendering'
+      },
+      dengxian: {
+        label: 'DengXian',
+        preview: 'Modern and clean strokes'
+      },
+      songti: {
+        label: 'Songti',
+        preview: 'Classic serif for reading'
+      },
+      kaiti: {
+        label: 'Kaiti',
+        preview: 'Calligraphic with strong character'
+      }
+    },
+    sizeTitle: 'Font size',
+    size: {
+      currentDefault: 'Current: Default',
+      currentOffset: 'Current: {offset}px',
+      hint: 'All fixed font sizes shift from their base values together',
+      decrease: 'Decrease size',
+      reset: 'Reset',
+      increase: 'Increase size',
+      preview: 'Preview',
+      sampleText: 'Text'
+    }
+  },
   auth: {
-    brand: 'Secure sign-in for desktop',
-    subtitle: 'Accounts live in SQLite and preferences live in electron-conf.',
     welcomeBack: 'Welcome back',
     createAccount: 'Create your local account',
-    loginTab: 'Login',
-    registerTab: 'Register',
     username: 'Account',
     usernamePlaceholder: 'Enter your account',
     email: 'Email (optional)',
@@ -83,17 +134,12 @@ export default {
     confirmPasswordPlaceholder: 'Enter your password again',
     login: 'Login',
     register: 'Register',
+    registerLocalAccount: 'Register Local Account',
+    backToLogin: 'Back to Login',
     forgotPassword: 'Forgot password?',
     rememberDevice: 'Remember this device',
-    secureAccess: 'Secure enterprise access',
-    securityAes: '256-bit AES',
-    securityMfa: 'Multi-factor ready',
     support: 'Support',
     privacy: 'Privacy',
-    noAccount: 'No account yet?',
-    hasAccount: 'Already have an account?',
-    switchToLogin: 'Go to login',
-    switchToRegister: 'Go to register',
     successLogin: 'Logged in successfully.',
     successRegister: 'Registered successfully and signed in.',
     passwordMismatch: 'The two passwords do not match.',
@@ -116,7 +162,6 @@ export default {
     dataRestore: 'Data restore',
     reportSettings: 'Report settings',
     dataDirectory: 'Data storage folder',
-    language: 'Language',
     languageBilingual: 'Language',
     languageOptionZh: 'Chinese',
     languageOptionEn: 'English',

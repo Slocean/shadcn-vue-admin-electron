@@ -82,29 +82,29 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
 
 export const fonts: Record<ThemeFont, FontConfig> = {
   system: {
-    label: '系统默认',
+    label: 'System',
     family: 'Inter, sans-serif',
-    preview: '界面清晰，适合日常使用'
+    preview: 'Clean and balanced for daily use'
   },
   yahei: {
-    label: '微软雅黑',
+    label: 'YaHei',
     family: '"Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", sans-serif',
-    preview: '中文显示更圆润'
+    preview: 'Softer Chinese glyph rendering'
   },
   dengxian: {
-    label: '等线',
+    label: 'DengXian',
     family: 'DengXian, "Microsoft YaHei UI", sans-serif',
-    preview: '现代简洁，字形利落'
+    preview: 'Modern and clean strokes'
   },
   songti: {
-    label: '宋体',
+    label: 'Songti',
     family: 'SimSun, Songti SC, serif',
-    preview: '传统衬线，适合阅读'
+    preview: 'Classic serif for reading'
   },
   kaiti: {
-    label: '楷体',
+    label: 'Kaiti',
     family: 'KaiTi, STKaiti, serif',
-    preview: '书卷风格，更有辨识度'
+    preview: 'Calligraphic with strong character'
   }
 }
 
