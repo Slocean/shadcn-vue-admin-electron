@@ -169,7 +169,7 @@ async function handleRegister(payload: RegisterPayload) {
 
     <div class="app-region-no-drag relative z-10 w-full max-w-sm">
       <Card
-        class="overflow-hidden p-8 rounded-[15px] border-border/70 bg-card/80 shadow-[0_30px_70px_-18px_rgba(0,0,0,0.18)] backdrop-blur"
+        class="overflow-hidden p-8 rounded-[15px] border-border/70 bg-card/80 shadow-[0_30px_70px_-18px_rgba(0,0,0,0.08)] dark:shadow-[0_30px_70px_-18px_rgba(255,255,255,0.08)] backdrop-blur"
       >
         <CardContent class="p-0">
           <div class="mb-4 flex flex-col items-center text-center">
