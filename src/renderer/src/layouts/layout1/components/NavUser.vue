@@ -55,6 +55,10 @@ const { isMobile } = useSidebar()
 const { t, locale } = useI18n()
 const authStore = useAuthStore()
 const router = useRouter()
+const localeOptionLabels: Record<AppLocale, string> = {
+  'zh-CN': '简体中文',
+  'en-US': 'English'
+}
 const userInitials = computed(() => {
   const name = props.user.name?.trim()
   const email = props.user.email?.trim()
@@ -164,10 +168,10 @@ async function handleLocaleChange(nextLocale: AppLocale) {
                   @update:model-value="value => handleLocaleChange(value as AppLocale)"
                 >
                   <DropdownMenuRadioItem value="zh-CN">
-                    {{ t('userMenu.languageOptionZh') }}
+                    {{ localeOptionLabels['zh-CN'] }}
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="en-US">
-                    {{ t('userMenu.languageOptionEn') }}
+                    {{ localeOptionLabels['en-US'] }}
                   </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuSubContent>

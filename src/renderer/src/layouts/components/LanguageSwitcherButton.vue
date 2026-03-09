@@ -14,9 +14,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { setAppLocale, type AppLocale } from '@/i18n'
 
 const { t, locale } = useI18n()
+const localeOptionLabels: Record<AppLocale, string> = {
+  'zh-CN': '简体中文',
+  'en-US': 'English'
+}
 
 const currentLanguageLabel = computed(() => {
-  return locale.value === 'zh-CN' ? t('userMenu.languageOptionZh') : t('userMenu.languageOptionEn')
+  return localeOptionLabels[locale.value as AppLocale]
 })
 
 const currentLanguageShortLabel = computed(() => {
@@ -47,7 +51,7 @@ async function handleLocaleChange(nextLocale: AppLocale) {
                 {{ currentLanguageShortLabel }}
               </span>
               <span class="sr-only">
-                {{ `${t('userMenu.languageBilingual')}：${currentLanguageLabel}` }}
+                {{ `${t('userMenu.languageBilingual')}: ${currentLanguageLabel}` }}
               </span>
             </Button>
           </DropdownMenuTrigger>
@@ -58,16 +62,16 @@ async function handleLocaleChange(nextLocale: AppLocale) {
             @update:model-value="value => handleLocaleChange(value as AppLocale)"
           >
             <DropdownMenuRadioItem value="zh-CN">
-              {{ t('userMenu.languageOptionZh') }}
+              {{ localeOptionLabels['zh-CN'] }}
             </DropdownMenuRadioItem>
             <DropdownMenuRadioItem value="en-US">
-              {{ t('userMenu.languageOptionEn') }}
+              {{ localeOptionLabels['en-US'] }}
             </DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
       <TooltipContent side="bottom">
-        <p>{{ `${t('userMenu.languageBilingual')}：${currentLanguageLabel}` }}</p>
+        <p>{{ `${t('userMenu.languageBilingual')}: ${currentLanguageLabel}` }}</p>
       </TooltipContent>
     </Tooltip>
   </TooltipProvider>
