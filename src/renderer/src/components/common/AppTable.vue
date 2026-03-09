@@ -11,6 +11,21 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious
+} from '@/components/ui/pagination'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
   Table,
   TableBody,
   TableCell,
@@ -48,6 +63,11 @@ const props = withDefaults(
     emptyText?: string
     sortable?: boolean
     columnFilterable?: boolean
+    pagination?: boolean
+    defaultPageSize?: number
+    pageSizeOptions?: number[]
+    showPaginationTotal?: boolean
+    showSizeChanger?: boolean
   }>(),
   {
     title: '',
@@ -56,13 +76,29 @@ const props = withDefaults(
     filterPlaceholder: 'Search',
     emptyText: 'No records found',
     sortable: true,
-    columnFilterable: true
+    columnFilterable: true,
+    pagination: false,
+    defaultPageSize: 10,
+    pageSizeOptions: () => [10, 20, 30, 50],
+    showPaginationTotal: true,
+    showSizeChanger: true
   }
 )
 
 const keyword = ref('')
 const sortState = ref<SortState>({ key: '', order: null })
 const visibleColumnKeys = ref<string[]>([])
+const currentPage = ref(1)
+
+const sanitizePositiveInt = (value: unknown, fallback: number): number => {
+  const parsed = Number(value)
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    return fallback
+  }
+  return parsed
+}
+
+const pageSize = ref(sanitizePositiveInt(props.defaultPageSize, 10))
 
 const normalizeDataIndex = (dataIndex: DataIndex): string[] =>
   Array.isArray(dataIndex) ? dataIndex : dataIndex.split('.')
@@ -163,6 +199,50 @@ const sortedDataSource = computed(() => {
   })
 })
 
+const normalizedPageSizeOptions = computed(() => {
+  const options = props.pageSizeOptions.map((size) => sanitizePositiveInt(size, 0)).filter((size) => size > 0)
+  const merged = new Set<number>([...options, pageSize.value])
+  return Array.from(merged).sort((a, b) => a - b)
+})
+
+const totalItems = computed(() => sortedDataSource.value.length)
+const totalPages = computed(() => {
+  if (!props.pagination) {
+    return 1
+  }
+  return Math.max(1, Math.ceil(totalItems.value / pageSize.value))
+})
+
+const pagedDataSource = computed(() => {
+  if (!props.pagination) {
+    return sortedDataSource.value
+  }
+
+  const start = (currentPage.value - 1) * pageSize.value
+  return sortedDataSource.value.slice(start, start + pageSize.value)
+})
+
+const rowIndexOffset = computed(() => {
+  if (!props.pagination) {
+    return 0
+  }
+  return (currentPage.value - 1) * pageSize.value
+})
+
+const startItem = computed(() => {
+  if (totalItems.value === 0) {
+    return 0
+  }
+  return rowIndexOffset.value + 1
+})
+
+const endItem = computed(() => {
+  if (!props.pagination || totalItems.value === 0) {
+    return totalItems.value
+  }
+  return Math.min(rowIndexOffset.value + pageSize.value, totalItems.value)
+})
+
 watch(
   () => props.columns,
   (columns) => {
@@ -181,6 +261,36 @@ watch(
   },
   { immediate: true }
 )
+
+watch(
+  () => props.defaultPageSize,
+  (size) => {
+    pageSize.value = sanitizePositiveInt(size, 10)
+    currentPage.value = 1
+  }
+)
+
+watch(totalPages, (pages) => {
+  if (currentPage.value > pages) {
+    currentPage.value = pages
+  }
+})
+
+watch(keyword, () => {
+  currentPage.value = 1
+})
+
+watch(
+  () => props.dataSource,
+  () => {
+    currentPage.value = 1
+  }
+)
+
+const onPageSizeChange = (value: unknown): void => {
+  pageSize.value = sanitizePositiveInt(value, pageSize.value)
+  currentPage.value = 1
+}
 
 const isColumnVisible = (key: string): boolean => visibleColumnKeys.value.includes(key)
 
@@ -292,7 +402,7 @@ const getRowKey = (record: any, rowIndex: number): string => {
         </TableHeader>
 
         <TableBody>
-          <TableRow v-for="(record, rowIndex) in sortedDataSource" :key="getRowKey(record, rowIndex)">
+          <TableRow v-for="(record, rowIndex) in pagedDataSource" :key="getRowKey(record, rowIndexOffset + rowIndex)">
             <TableCell
               v-for="column in visibleColumns"
               :key="getColumnKey(column)"
@@ -303,7 +413,7 @@ const getRowKey = (record: any, rowIndex: number): string => {
                 :value="getValueByDataIndex(record, column.dataIndex)"
                 :record="record"
                 :column="column"
-                :index="rowIndex"
+                :index="rowIndexOffset + rowIndex"
               >
                 {{ displayText(getValueByDataIndex(record, column.dataIndex)) }}
               </slot>
@@ -315,6 +425,44 @@ const getRowKey = (record: any, rowIndex: number): string => {
           </TableEmpty>
         </TableBody>
       </Table>
+    </div>
+
+    <div v-if="props.pagination" class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <p v-if="props.showPaginationTotal" class="text-sm text-muted-foreground">
+        Showing {{ startItem }}-{{ endItem }} of {{ totalItems }}
+      </p>
+      <div class="ml-auto flex flex-wrap items-center gap-2">
+        <div v-if="props.showSizeChanger" class="flex items-center gap-2">
+          <label class="text-sm text-muted-foreground">Rows per page</label>
+          <Select :model-value="String(pageSize)" @update:model-value="onPageSizeChange">
+            <SelectTrigger class="h-8 w-20">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="size in normalizedPageSizeOptions" :key="size" :value="String(size)">
+                {{ size }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Pagination v-model:page="currentPage" :items-per-page="pageSize" :total="totalItems" :sibling-count="1">
+          <PaginationContent v-slot="{ items }">
+            <PaginationPrevious />
+            <template v-for="(item, index) in items" :key="`page-item-${index}`">
+              <PaginationItem
+                v-if="item.type === 'page'"
+                :value="item.value"
+                :is-active="item.value === currentPage"
+              >
+                {{ item.value }}
+              </PaginationItem>
+              <PaginationEllipsis v-else />
+            </template>
+            <PaginationNext />
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   </section>
 </template>
