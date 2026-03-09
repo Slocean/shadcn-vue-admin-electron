@@ -62,9 +62,6 @@ function handleSubmit() {
         <label class="text-sm font-medium text-foreground" for="login-password">{{
           t('auth.password')
         }}</label>
-        <Button variant="link" type="button" class="h-auto p-0 text-sm text-primary">
-          {{ t('auth.forgotPassword') }}
-        </Button>
       </div>
       <div class="relative">
         <Lock
@@ -92,24 +89,29 @@ function handleSubmit() {
       </div>
     </div>
 
-    <div class="flex items-center justify-between gap-3 px-1">
-      <label class="flex cursor-pointer items-center gap-3 text-sm text-muted-foreground select-none">
-        <input
-          v-model="rememberDevice"
-          type="checkbox"
-          class="h-4 w-4 rounded border-border accent-[var(--primary)]"
-        />
-        <span>{{ t('auth.rememberDevice') }}</span>
-      </label>
-      <Button
-        variant="link"
-        type="button"
-        class="h-auto p-0 text-sm text-primary"
-        @click="emit('switch-register')"
-      >
-        {{ t('auth.registerLocalAccount') }}
-      </Button>
+    <div class="flex justify-end px-1">
+      <div class="flex items-center gap-4">
+        <Button variant="link" type="button" class="h-auto p-0 text-sm text-primary">
+          {{ t('auth.forgotPassword') }}
+        </Button>
+        <Button
+          variant="link"
+          type="button"
+          class="h-auto p-0 text-sm text-primary"
+          @click="emit('switch-register')"
+        >
+          {{ t('auth.registerLocalAccount') }}
+        </Button>
+      </div>
     </div>
+    <label class="flex cursor-pointer items-center gap-3 px-1 text-sm text-muted-foreground select-none">
+      <input
+        v-model="rememberDevice"
+        type="checkbox"
+        class="h-4 w-4 rounded border-border accent-[var(--primary)]"
+      />
+      <span>{{ t('auth.rememberDevice') }}</span>
+    </label>
 
     <Button
       type="submit"
