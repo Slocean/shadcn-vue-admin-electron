@@ -48,20 +48,10 @@ function resolveTitle(record: { meta?: Record<string, unknown>; name?: unknown; 
 }
 
 const breadcrumbs = computed<BreadcrumbEntry[]>(() => {
-  const items = route.matched.map((record, index, records) => ({
+  return route.matched.map((record, index, records) => ({
     title: resolveTitle(record),
     to: index === records.length - 1 ? undefined : record.path
   }))
-
-  const navGroup = typeof route.meta?.navGroup === 'string' ? route.meta.navGroup : ''
-  const navKey = navGroup ? `nav.${navGroup.toLowerCase()}` : ''
-  const navTitle = navKey && t(navKey) !== navKey ? t(navKey) : navGroup
-
-  if (navTitle && items[0]?.title !== navTitle) {
-    return [{ title: navTitle }, ...items]
-  }
-
-  return items
 })
 </script>
 
