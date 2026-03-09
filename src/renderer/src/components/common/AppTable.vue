@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { SlidersHorizontal } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -74,8 +75,8 @@ const props = withDefaults(
     title: '',
     bordered: true,
     rowKey: 'id',
-    filterPlaceholder: 'Search',
-    emptyText: 'No records found',
+    filterPlaceholder: '',
+    emptyText: '',
     sortable: true,
     columnFilterable: true,
     pagination: false,
@@ -85,6 +86,7 @@ const props = withDefaults(
     showSizeChanger: true
   }
 )
+const { t } = useI18n()
 
 const keyword = ref('')
 const sortState = ref<SortState>({ key: '', order: null })
@@ -100,6 +102,15 @@ const sanitizePositiveInt = (value: unknown, fallback: number): number => {
 }
 
 const pageSize = ref(sanitizePositiveInt(props.defaultPageSize, 10))
+
+const textWithFallback = (
+  key: string,
+  fallback: string,
+  values?: Record<string, string | number>
+): string => {
+  const localized = values ? t(key as never, values as never) : t(key as never)
+  return localized === key ? fallback : localized
+}
 
 const normalizeDataIndex = (dataIndex: DataIndex): string[] =>
   Array.isArray(dataIndex) ? dataIndex : dataIndex.split('.')
@@ -244,6 +255,25 @@ const endItem = computed(() => {
   return Math.min(rowIndexOffset.value + pageSize.value, totalItems.value)
 })
 
+const filterPlaceholderText = computed(() =>
+  props.filterPlaceholder || textWithFallback('appTable.searchPlaceholder', 'Search')
+)
+
+const emptyTextValue = computed(() =>
+  props.emptyText || textWithFallback('appTable.emptyText', 'No records found')
+)
+
+const viewText = computed(() => textWithFallback('appTable.view', 'View'))
+const toggleColumnsText = computed(() => textWithFallback('appTable.toggleColumns', 'Toggle columns'))
+const rowsPerPageText = computed(() => textWithFallback('appTable.rowsPerPage', 'Rows per page'))
+const showingSummaryText = computed(() =>
+  textWithFallback('appTable.showingSummary', `Showing ${startItem.value}-${endItem.value} of ${totalItems.value}`, {
+    start: startItem.value,
+    end: endItem.value,
+    total: totalItems.value
+  })
+)
+
 watch(
   () => props.columns,
   (columns) => {
@@ -357,17 +387,17 @@ const getRowKey = (record: any, rowIndex: number): string => {
       <h3 v-if="props.title" class="text-base font-semibold">{{ props.title }}</h3>
       <div class="flex w-full flex-col gap-2 md:ml-auto md:w-auto md:flex-row">
         <div class="w-full md:w-72">
-          <Input v-model="keyword" :placeholder="props.filterPlaceholder" />
+          <Input v-model="keyword" :placeholder="filterPlaceholderText" />
         </div>
         <DropdownMenu v-if="props.columnFilterable">
           <DropdownMenuTrigger as-child>
             <Button variant="outline" size="sm" class="gap-2">
               <SlidersHorizontal class="size-4" />
-              View
+              {{ viewText }}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" class="w-52">
-            <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+            <DropdownMenuLabel>{{ toggleColumnsText }}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem
               v-for="column in props.columns"
@@ -426,7 +456,7 @@ const getRowKey = (record: any, rowIndex: number): string => {
           </TableRow>
 
           <TableEmpty v-if="sortedDataSource.length === 0" :colspan="visibleColumns.length">
-            {{ props.emptyText }}
+            {{ emptyTextValue }}
           </TableEmpty>
         </TableBody>
       </Table>
@@ -434,11 +464,11 @@ const getRowKey = (record: any, rowIndex: number): string => {
 
     <div v-if="props.pagination" class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <p v-if="props.showPaginationTotal" class="text-sm text-muted-foreground">
-        Showing {{ startItem }}-{{ endItem }} of {{ totalItems }}
+        {{ showingSummaryText }}
       </p>
       <div class="ml-auto flex w-full flex-wrap items-center justify-end gap-3 sm:w-auto">
         <div v-if="props.showSizeChanger" class="flex items-center gap-2">
-          <label class="text-sm text-muted-foreground">Rows per page</label>
+          <label class="text-sm text-muted-foreground">{{ rowsPerPageText }}</label>
           <Select :model-value="String(pageSize)" @update:model-value="onPageSizeChange">
             <SelectTrigger class="h-8 w-20">
               <SelectValue />

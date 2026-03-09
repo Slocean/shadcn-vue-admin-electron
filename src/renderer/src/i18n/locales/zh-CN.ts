@@ -39,6 +39,16 @@ export default {
   reportManagement: {
     title: '报告管理'
   },
+  appTable: {
+    searchPlaceholder: '搜索',
+    emptyText: '暂无数据',
+    view: '视图',
+    toggleColumns: '切换列',
+    rowsPerPage: '每页行数',
+    showingSummary: '显示 {start}-{end} 条，共 {total} 条',
+    previous: '上一页',
+    next: '下一页'
+  },
   patientManagement: {
     title: '患者管理'
   },

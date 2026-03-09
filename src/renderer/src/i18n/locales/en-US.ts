@@ -39,6 +39,16 @@ export default {
   reportManagement: {
     title: 'Report Management'
   },
+  appTable: {
+    searchPlaceholder: 'Search',
+    emptyText: 'No records found',
+    view: 'View',
+    toggleColumns: 'Toggle columns',
+    rowsPerPage: 'Rows per page',
+    showingSummary: 'Showing {start}-{end} of {total}',
+    previous: 'Previous',
+    next: 'Next'
+  },
   patientManagement: {
     title: 'Patient Management'
   },
