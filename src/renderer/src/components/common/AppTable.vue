@@ -431,7 +431,7 @@ const getRowKey = (record: any, rowIndex: number): string => {
       <p v-if="props.showPaginationTotal" class="text-sm text-muted-foreground">
         Showing {{ startItem }}-{{ endItem }} of {{ totalItems }}
       </p>
-      <div class="ml-auto flex flex-wrap items-center gap-2">
+      <div class="ml-auto flex w-full flex-wrap items-center justify-end gap-3 sm:w-auto">
         <div v-if="props.showSizeChanger" class="flex items-center gap-2">
           <label class="text-sm text-muted-foreground">Rows per page</label>
           <Select :model-value="String(pageSize)" @update:model-value="onPageSizeChange">
@@ -446,7 +446,13 @@ const getRowKey = (record: any, rowIndex: number): string => {
           </Select>
         </div>
 
-        <Pagination v-model:page="currentPage" :items-per-page="pageSize" :total="totalItems" :sibling-count="1">
+        <Pagination
+          v-model:page="currentPage"
+          :items-per-page="pageSize"
+          :total="totalItems"
+          :sibling-count="1"
+          class="mx-0 w-auto justify-start"
+        >
           <PaginationContent v-slot="{ items }">
             <PaginationPrevious />
             <template v-for="(item, index) in items" :key="`page-item-${index}`">
