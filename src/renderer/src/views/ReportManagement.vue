@@ -1,16 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import AppTable from '@/components/common/AppTable.vue'
 import { Badge } from '@/components/ui/badge'
-import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
 
 interface ReportItem {
   id: string
@@ -23,10 +14,6 @@ interface ReportItem {
   status: 'draft' | 'reviewing' | 'done'
   updatedAt: string
 }
-
-type StatusFilter = 'all' | ReportItem['status'] | 'none'
-type FilterPreset = 'reportAndPatient' | 'statusAndType' | 'all'
-type RowKeyMode = 'id' | 'reportNo'
 
 const patientNames = [
   'Li Ming',
@@ -60,12 +47,6 @@ const allReports: ReportItem[] = Array.from({ length: 20 }, (_, idx) => {
     updatedAt: `2026-03-${String((idx % 9) + 1).padStart(2, '0')} ${String(9 + (idx % 10)).padStart(2, '0')}:${String(5 + (idx % 50)).padStart(2, '0')}`
   }
 })
-
-const statusFilter = ref<StatusFilter>('all')
-const bordered = ref(true)
-const showTitle = ref(true)
-const rowKeyMode = ref<RowKeyMode>('id')
-const filterPreset = ref<FilterPreset>('reportAndPatient')
 
 const statusTextMap: Record<ReportItem['status'], string> = {
   draft: 'Draft',
@@ -113,118 +94,21 @@ const tableColumns = [
   }
 ]
 
-const filterColumnsMap: Record<FilterPreset, Array<string | string[]>> = {
-  reportAndPatient: ['reportNo', ['patient', 'name']],
-  statusAndType: ['status', 'type'],
-  all: ['reportNo', ['patient', 'name'], 'type', 'status', 'updatedAt']
-}
-
-const filterPlaceholderMap: Record<FilterPreset, string> = {
-  reportAndPatient: 'Search by report no or patient name',
-  statusAndType: 'Search by status or type',
-  all: 'Search all columns'
-}
-
-const tableRows = computed(() => {
-  if (statusFilter.value === 'none') {
-    return []
-  }
-
-  if (statusFilter.value === 'all') {
-    return allReports
-  }
-
-  return allReports.filter((item) => item.status === statusFilter.value)
-})
-
-const tableTitle = computed(() => {
-  if (!showTitle.value) {
-    return ''
-  }
-
-  return `Report List (${tableRows.value.length})`
-})
-
-const emptyText = computed(() => {
-  if (statusFilter.value === 'none') {
-    return 'No records (demo empty state)'
-  }
-
-  return 'No records found'
-})
-
-const currentFilterColumns = computed(() => filterColumnsMap[filterPreset.value])
-const filterPlaceholder = computed(() => filterPlaceholderMap[filterPreset.value])
-const currentRowKey = computed(() => rowKeyMode.value)
+const tableRows = computed(() => allReports)
+const tableTitle = computed(() => `Report List (${tableRows.value.length})`)
 </script>
 
 <template>
-  <section class="space-y-4 py-4">
-    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-      <div class="space-y-2">
-        <Label>Status Filter</Label>
-        <Select v-model="statusFilter">
-          <SelectTrigger class="w-full">
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="reviewing">Reviewing</SelectItem>
-            <SelectItem value="done">Done</SelectItem>
-            <SelectItem value="none">None (Empty)</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div class="space-y-2">
-        <Label>Filter Columns</Label>
-        <Select v-model="filterPreset">
-          <SelectTrigger class="w-full">
-            <SelectValue placeholder="Select filter preset" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="reportAndPatient">Report + Patient</SelectItem>
-            <SelectItem value="statusAndType">Status + Type</SelectItem>
-            <SelectItem value="all">All Columns</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div class="space-y-2">
-        <Label>Row Key</Label>
-        <Select v-model="rowKeyMode">
-          <SelectTrigger class="w-full">
-            <SelectValue placeholder="Select row key" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="id">id</SelectItem>
-            <SelectItem value="reportNo">reportNo</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div class="flex items-end gap-2 pb-1">
-        <Switch id="toggle-bordered" v-model="bordered" />
-        <Label for="toggle-bordered">Bordered</Label>
-      </div>
-
-      <div class="flex items-end gap-2 pb-1">
-        <Switch id="toggle-title" v-model="showTitle" />
-        <Label for="toggle-title">Show Title</Label>
-      </div>
-    </div>
-
+  <section class="py-4">
     <AppTable
       :title="tableTitle"
       :columns="tableColumns"
       :data-source="tableRows"
-      :bordered="bordered"
-      :filter-columns="currentFilterColumns"
-      :row-key="currentRowKey"
-      :filter-placeholder="filterPlaceholder"
-      :empty-text="emptyText"
-      :row-selection="true"
+      :bordered="true"
+      :filter-columns="['reportNo', ['patient', 'name'], 'type', 'status', 'updatedAt']"
+      row-key="id"
+      filter-placeholder="Search all columns"
+      empty-text="No records found"
       :pagination="true"
       :default-page-size="10"
       :page-size-options="[10, 20, 30]"
