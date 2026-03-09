@@ -72,7 +72,7 @@ const props = withDefaults(
   }>(),
   {
     title: '',
-    bordered: false,
+    bordered: true,
     rowKey: 'id',
     filterPlaceholder: 'Search',
     emptyText: 'No records found',

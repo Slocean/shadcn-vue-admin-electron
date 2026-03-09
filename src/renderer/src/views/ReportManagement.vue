@@ -104,7 +104,6 @@ const tableTitle = computed(() => `Report List (${tableRows.value.length})`)
       :title="tableTitle"
       :columns="tableColumns"
       :data-source="tableRows"
-      :bordered="true"
       :filter-columns="['reportNo', ['patient', 'name'], 'type', 'status', 'updatedAt']"
       row-key="id"
       filter-placeholder="Search all columns"
