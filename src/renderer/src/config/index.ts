@@ -14,6 +14,7 @@ export interface NavItem {
 type AppRouteMeta = {
   title?: string
   navIcon?: LucideIcon
+  isNotMenu?: boolean
 }
 
 function readRouteMeta(route: RouteRecordRaw): AppRouteMeta {
@@ -46,32 +47,38 @@ function collectNavItems(
   inheritedRequiresAuth = false
 ): NavItem[] {
   return routes.flatMap(route => {
+    const meta = readRouteMeta(route)
     const currentPath = route.path.startsWith('/')
       ? route.path
       : `${parentPath}/${route.path}`.replace(/\/+/g, '/')
     const requiresAuth = Boolean(route.meta?.requiresAuth ?? inheritedRequiresAuth)
+    const isNotMenu = Boolean(meta.isNotMenu)
 
     const children = route.children?.length
       ? collectNavItems(route.children, currentPath, requiresAuth)
       : []
 
     if (children.length > 0) {
+      if (isNotMenu) {
+        return children
+      }
+
       return [{
         title: resolveRouteTitle(route),
         url: currentPath,
-        icon: readRouteMeta(route).navIcon || SquareTerminal,
+        icon: meta.navIcon || SquareTerminal,
         items: children
       }]
     }
 
-    if (!requiresAuth) {
+    if (!requiresAuth || isNotMenu) {
       return []
     }
 
     return [{
       title: resolveRouteTitle(route),
       url: currentPath,
-      icon: readRouteMeta(route).navIcon || SquareTerminal,
+      icon: meta.navIcon || SquareTerminal,
     }]
   })
 }

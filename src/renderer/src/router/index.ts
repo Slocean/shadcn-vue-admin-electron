@@ -58,6 +58,7 @@ export const appRoutes: RouteRecordRaw[] = [
       title: '账户信息',
       navGroup: '账户',
       navIcon: User,
+      isNotMenu: true,
       requiresAuth: true,
       layout: 'app'
     }
