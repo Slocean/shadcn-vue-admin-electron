@@ -161,12 +161,15 @@ async function handleRegister(payload: RegisterPayload) {
           background-size: 40px 40px;
         "
       />
-      <div class="starfield-overlay absolute inset-0 transition-opacity duration-300" :style="starfieldStyle" />
+      <div
+        class="starfield-overlay absolute inset-0 transition-opacity duration-300"
+        :style="starfieldStyle"
+      />
     </div>
 
     <div class="app-region-no-drag relative z-10 w-full max-w-sm">
       <Card
-        class="overflow-hidden p-8 rounded-[15px] border-border/70 bg-card/95 shadow-[0_30px_70px_-18px_rgba(0,0,0,0.18)] backdrop-blur"
+        class="overflow-hidden p-8 rounded-[15px] border-border/70 bg-card/80 shadow-[0_30px_70px_-18px_rgba(0,0,0,0.18)] backdrop-blur"
       >
         <CardContent class="p-0">
           <div class="mb-4 flex flex-col items-center text-center">
@@ -232,14 +235,27 @@ async function handleRegister(payload: RegisterPayload) {
 .starfield-overlay {
   --star-x: 50%;
   --star-y: 50%;
+  --star-strong: color-mix(in oklab, var(--primary) 72%, transparent);
+  --star-medium: color-mix(in oklab, var(--primary) 56%, transparent);
+  --star-soft: color-mix(in oklab, var(--primary) 40%, transparent);
   background-image:
-    radial-gradient(circle at 12% 24%, rgba(255, 255, 255, 0.92) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.75) 0 1.2px, transparent 2px),
-    radial-gradient(circle at 62% 74%, rgba(196, 220, 255, 0.9) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 26% 68%, rgba(180, 230, 255, 0.7) 0 1.1px, transparent 1.8px),
-    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.32) 1px, transparent 0);
-  background-size: 280px 280px, 320px 320px, 260px 260px, 340px 340px, 36px 36px;
-  background-position: 0 0, 40px 20px, -30px 50px, 80px -60px, 0 0;
+    radial-gradient(circle at 12% 24%, var(--star-strong) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 78% 18%, var(--star-medium) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 62% 74%, var(--star-strong) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 26% 68%, var(--star-soft) 0 1.1px, transparent 1.8px),
+    radial-gradient(circle at 1px 1px, var(--star-soft) 1px, transparent 0);
+  background-size:
+    280px 280px,
+    320px 320px,
+    260px 260px,
+    340px 340px,
+    36px 36px;
+  background-position:
+    0 0,
+    40px 20px,
+    -30px 50px,
+    80px -60px,
+    0 0;
   mix-blend-mode: screen;
   opacity: 0;
   animation: starfield-twinkle 6s ease-in-out infinite alternate;
