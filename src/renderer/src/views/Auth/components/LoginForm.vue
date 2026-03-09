@@ -52,7 +52,7 @@ function handleSubmit() {
           type="text"
           autocomplete="username"
           :placeholder="t('auth.usernamePlaceholder')"
-          class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11 pr-4 shadow-none"
+          class="h-11 rounded-xl border-border/70 bg-muted/35 pl-11 pr-4 shadow-none"
         />
       </div>
     </div>
@@ -73,7 +73,7 @@ function handleSubmit() {
           :type="showPassword ? 'text' : 'password'"
           autocomplete="current-password"
           :placeholder="t('auth.passwordPlaceholder')"
-          class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11 shadow-none"
+          class="h-11 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11 shadow-none"
         />
         <Button
           type="button"

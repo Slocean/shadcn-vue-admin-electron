@@ -68,7 +68,7 @@ function handleSubmit() {
           v-model="form.username"
           autocomplete="username"
           :placeholder="t('auth.usernamePlaceholder')"
-          class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11"
+          class="h-11 rounded-xl border-border/70 bg-muted/35 pl-11"
         />
       </div>
     </div>
@@ -83,7 +83,7 @@ function handleSubmit() {
         type="email"
         autocomplete="email"
         :placeholder="t('auth.emailPlaceholder')"
-        class="h-12 rounded-xl border-border/70 bg-muted/35"
+        class="h-11 rounded-xl border-border/70 bg-muted/35"
       />
     </div>
 
@@ -101,7 +101,7 @@ function handleSubmit() {
           :type="showPassword ? 'text' : 'password'"
           autocomplete="new-password"
           :placeholder="t('auth.passwordPlaceholder')"
-          class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11"
+          class="h-11 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11"
         />
         <Button
           type="button"
@@ -131,7 +131,7 @@ function handleSubmit() {
           :type="showConfirmPassword ? 'text' : 'password'"
           autocomplete="new-password"
           :placeholder="t('auth.confirmPasswordPlaceholder')"
-          class="h-12 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11"
+          class="h-11 rounded-xl border-border/70 bg-muted/35 pl-11 pr-11"
         />
         <Button
           type="button"
