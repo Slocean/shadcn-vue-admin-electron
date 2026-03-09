@@ -22,10 +22,43 @@ const mode = computed<'login' | 'register'>(() =>
 )
 const busy = ref(false)
 const successMessage = ref('')
+const authContainerRef = ref<HTMLElement | null>(null)
+const pointerX = ref(0)
+const pointerY = ref(0)
+const isPointerInside = ref(false)
+const starfieldStyle = computed(() => ({
+  '--star-x': `${pointerX.value}px`,
+  '--star-y': `${pointerY.value}px`,
+  opacity: isPointerInside.value ? '1' : '0'
+}))
 
 watch(mode, () => {
   successMessage.value = ''
 })
+
+function updatePointerPosition(event: MouseEvent): void {
+  const container = authContainerRef.value
+  if (!container) {
+    return
+  }
+
+  const rect = container.getBoundingClientRect()
+  pointerX.value = event.clientX - rect.left
+  pointerY.value = event.clientY - rect.top
+}
+
+function handlePointerEnter(event: MouseEvent): void {
+  isPointerInside.value = true
+  updatePointerPosition(event)
+}
+
+function handlePointerMove(event: MouseEvent): void {
+  updatePointerPosition(event)
+}
+
+function handlePointerLeave(): void {
+  isPointerInside.value = false
+}
 
 function formatAuthError(error: unknown) {
   if (!(error instanceof Error)) {
@@ -101,7 +134,11 @@ async function handleRegister(payload: RegisterPayload) {
 
 <template>
   <div
+    ref="authContainerRef"
     class="app-region-no-drag relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-8"
+    @mouseenter="handlePointerEnter"
+    @mousemove="handlePointerMove"
+    @mouseleave="handlePointerLeave"
   >
     <div class="app-region-drag absolute inset-x-0 top-0 z-20 flex h-14 items-center px-4">
       <div class="flex-1"></div>
@@ -124,6 +161,7 @@ async function handleRegister(payload: RegisterPayload) {
           background-size: 40px 40px;
         "
       />
+      <div class="starfield-overlay absolute inset-0 transition-opacity duration-300" :style="starfieldStyle" />
     </div>
 
     <div class="app-region-no-drag relative z-10 w-full max-w-sm">
@@ -189,3 +227,42 @@ async function handleRegister(payload: RegisterPayload) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.starfield-overlay {
+  --star-x: 50%;
+  --star-y: 50%;
+  background-image:
+    radial-gradient(circle at 12% 24%, rgba(255, 255, 255, 0.92) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.75) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 62% 74%, rgba(196, 220, 255, 0.9) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 26% 68%, rgba(180, 230, 255, 0.7) 0 1.1px, transparent 1.8px),
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.32) 1px, transparent 0);
+  background-size: 280px 280px, 320px 320px, 260px 260px, 340px 340px, 36px 36px;
+  background-position: 0 0, 40px 20px, -30px 50px, 80px -60px, 0 0;
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: starfield-twinkle 6s ease-in-out infinite alternate;
+  -webkit-mask-image: radial-gradient(
+    circle 180px at var(--star-x) var(--star-y),
+    rgba(0, 0, 0, 1) 0,
+    rgba(0, 0, 0, 0.75) 55%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: radial-gradient(
+    circle 180px at var(--star-x) var(--star-y),
+    rgba(0, 0, 0, 1) 0,
+    rgba(0, 0, 0, 0.75) 55%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+@keyframes starfield-twinkle {
+  0% {
+    filter: brightness(0.88) saturate(0.95);
+  }
+  100% {
+    filter: brightness(1.12) saturate(1.05);
+  }
+}
+</style>
