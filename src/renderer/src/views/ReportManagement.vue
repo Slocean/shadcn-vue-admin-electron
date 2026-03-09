@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, ref } from 'vue'
+import AppTable from '@/components/common/AppTable.vue'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -12,15 +10,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableEmpty,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
 
 interface ReportItem {
   id: string
@@ -58,12 +47,7 @@ const allReports: ReportItem[] = [
   }
 ]
 
-const filters = reactive({
-  keyword: '',
-  status: 'all'
-})
-
-const tableRows = ref<ReportItem[]>([...allReports])
+const statusFilter = ref<'all' | ReportItem['status']>('all')
 
 const statusTextMap: Record<ReportItem['status'], string> = {
   draft: 'Draft',
@@ -77,84 +61,51 @@ const statusVariantMap: Record<ReportItem['status'], 'secondary' | 'outline' | '
   done: 'default'
 }
 
-const totalCount = computed(() => tableRows.value.length)
+const tableColumns = [
+  { title: 'Report No', dataIndex: 'reportNo', key: 'reportNo' },
+  { title: 'Patient', dataIndex: 'patientName', key: 'patientName' },
+  { title: 'Type', dataIndex: 'type', key: 'type' },
+  { title: 'Status', dataIndex: 'status', key: 'status' },
+  { title: 'Updated At', dataIndex: 'updatedAt', key: 'updatedAt' }
+]
 
-const handleSearch = (): void => {
-  const keyword = filters.keyword.trim().toLowerCase()
+const tableRows = computed(() => {
+  if (statusFilter.value === 'all') {
+    return allReports
+  }
 
-  tableRows.value = allReports.filter((report) => {
-    const matchesKeyword =
-      keyword.length === 0 ||
-      report.reportNo.toLowerCase().includes(keyword) ||
-      report.patientName.toLowerCase().includes(keyword)
-
-    const matchesStatus = filters.status === 'all' || report.status === filters.status
-
-    return matchesKeyword && matchesStatus
-  })
-}
-
-const resetFilters = (): void => {
-  filters.keyword = ''
-  filters.status = 'all'
-  tableRows.value = [...allReports]
-}
+  return allReports.filter((item) => item.status === statusFilter.value)
+})
 </script>
 
 <template>
   <section class="space-y-4 py-4">
-    <div class="grid gap-4 md:grid-cols-[1fr_220px_auto_auto] md:items-end">
-      <div class="space-y-2">
-        <Label for="keyword">Keyword</Label>
-        <Input
-          id="keyword"
-          v-model="filters.keyword"
-          placeholder="Report No / Patient Name"
-          @keyup.enter="handleSearch"
-        />
-      </div>
-
-      <div class="space-y-2">
-        <Label>Status</Label>
-        <Select v-model="filters.status">
-          <SelectTrigger class="w-full">
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="reviewing">Reviewing</SelectItem>
-            <SelectItem value="done">Done</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <Button class="w-full md:w-auto" @click="handleSearch">Query</Button>
-      <Button class="w-full md:w-auto" variant="outline" @click="resetFilters">Reset</Button>
+    <div class="w-full max-w-64 space-y-2">
+      <Label>Status</Label>
+      <Select v-model="statusFilter">
+        <SelectTrigger class="w-full">
+          <SelectValue placeholder="Select status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All</SelectItem>
+          <SelectItem value="draft">Draft</SelectItem>
+          <SelectItem value="reviewing">Reviewing</SelectItem>
+          <SelectItem value="done">Done</SelectItem>
+        </SelectContent>
+      </Select>
     </div>
 
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Report No</TableHead>
-          <TableHead>Patient</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Updated At</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow v-for="row in tableRows" :key="row.id">
-          <TableCell class="font-medium">{{ row.reportNo }}</TableCell>
-          <TableCell>{{ row.patientName }}</TableCell>
-          <TableCell>{{ row.type }}</TableCell>
-          <TableCell>
-            <Badge :variant="statusVariantMap[row.status]">{{ statusTextMap[row.status] }}</Badge>
-          </TableCell>
-          <TableCell>{{ row.updatedAt }}</TableCell>
-        </TableRow>
-        <TableEmpty v-if="tableRows.length === 0" :colspan="5"> No records found </TableEmpty>
-      </TableBody>
-    </Table>
+    <AppTable
+      title="Report List"
+      :columns="tableColumns"
+      :data-source="tableRows"
+      :bordered="true"
+      :filter-columns="['reportNo', 'patientName']"
+      filter-placeholder="Search Report No / Patient Name"
+    >
+      <template #cell-status="{ record }">
+        <Badge :variant="statusVariantMap[record.status]">{{ statusTextMap[record.status] }}</Badge>
+      </template>
+    </AppTable>
   </section>
 </template>
