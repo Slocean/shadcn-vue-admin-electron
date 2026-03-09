@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/sheet'
 import { Check, Minus, MonitorSmartphone, Moon, Palette, Plus, Sun, Type } from 'lucide-vue-next'
 import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
 
 const themeStore = useThemeStore()
 const { t } = useI18n()
@@ -50,7 +51,7 @@ const fontEntries = computed(
   () => Object.entries(fonts) as [ThemeFont, (typeof fonts)[ThemeFont]][]
 )
 
-function getColorValue(color: ThemeColor) {
+function getColorValue(color: ThemeColor): string {
   const theme = themes[color]
   return `oklch(${themeStore.resolvedMode === 'dark' ? theme.activeColor.dark : theme.activeColor.light})`
 }
@@ -135,7 +136,7 @@ const sizePreviewText = computed(() => {
 
             <div class="grid grid-cols-3 gap-2.5">
               <button
-                v-for="[key, theme] in themeEntries"
+                v-for="[key] in themeEntries"
                 :key="key"
                 type="button"
                 :class="
@@ -173,6 +174,34 @@ const sizePreviewText = computed(() => {
                   </div>
                 </div>
               </button>
+            </div>
+          </section>
+
+          <Separator class="bg-border/60" />
+
+          <section class="space-y-4">
+            <div class="space-y-1">
+              <h3 class="text-sm font-semibold tracking-wide">
+                {{ t('themeSettings.activeStateTitle') }}
+              </h3>
+            </div>
+
+            <div class="rounded-2xl border border-border/70 bg-card/70 p-3 shadow-sm">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="text-sm font-medium text-foreground">
+                    {{ t('themeSettings.activeState.applyThemeColorLabel') }}
+                  </div>
+                  <p class="mt-1 text-xs text-muted-foreground">
+                    {{ t('themeSettings.activeState.applyThemeColorHint') }}
+                  </p>
+                </div>
+
+                <Switch
+                  :model-value="themeStore.applyThemeToActiveState"
+                  @update:model-value="themeStore.setApplyThemeToActiveState"
+                />
+              </div>
             </div>
           </section>
 

@@ -289,9 +289,25 @@
     @apply bg-background text-foreground;
     font-family: var(--app-font-family);
   }
+
 }
 
 @layer utilities {
+  :root[data-theme-active-state='false'] [data-sidebar='menu-button'][data-active='true'],
+  :root[data-theme-active-state='false'] [data-sidebar='menu-sub-button'][data-active='true'] {
+    background-color: var(--sidebar-accent) !important;
+    color: var(--sidebar-accent-foreground) !important;
+  }
+
+  :root[data-theme-active-state='false'] [data-sidebar='menu-sub-button'][data-active='true'] > svg {
+    color: var(--sidebar-accent-foreground) !important;
+  }
+
+  :root[data-theme-active-state='false'] [data-sidebar='menu-button'][data-active='true'] ~ [data-sidebar='menu-action'],
+  :root[data-theme-active-state='false'] [data-sidebar='menu-button'][data-active='true'] ~ [data-sidebar='menu-badge'] {
+    color: var(--sidebar-accent-foreground) !important;
+  }
+
   .app-region-drag {
     -webkit-app-region: drag;
   }

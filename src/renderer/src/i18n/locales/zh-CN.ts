@@ -79,7 +79,7 @@ export default {
   themeSettings: {
     open: '打开主题设置',
     title: '主题设置',
-    description: '调整显示模式、主题色、字体和字号大小。',
+    description: '调整显示模式、主题色、活动状态、字体和字号大小。',
     modeTitle: '显示模式',
     mode: {
       light: '浅色',
@@ -87,6 +87,11 @@ export default {
       system: '跟随系统'
     },
     colorTitle: '主题色',
+    activeStateTitle: '活动状态',
+    activeState: {
+      applyThemeColorLabel: '主题色应用到活动状态',
+      applyThemeColorHint: '开启后，菜单活动项会使用当前主题色高亮显示。'
+    },
     colors: {
       zinc: '锌灰',
       red: '红色',

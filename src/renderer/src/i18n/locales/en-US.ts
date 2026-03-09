@@ -79,7 +79,7 @@ export default {
   themeSettings: {
     open: 'Open theme settings',
     title: 'Theme settings',
-    description: 'Adjust display mode, theme color, font, and font size.',
+    description: 'Adjust display mode, theme color, active state, font, and font size.',
     modeTitle: 'Display mode',
     mode: {
       light: 'Light',
@@ -87,6 +87,11 @@ export default {
       system: 'System'
     },
     colorTitle: 'Theme color',
+    activeStateTitle: 'Active state',
+    activeState: {
+      applyThemeColorLabel: 'Apply theme color to active state',
+      applyThemeColorHint: 'When enabled, active menu items are highlighted with the current theme color.'
+    },
     colors: {
       zinc: 'Zinc',
       red: 'Red',

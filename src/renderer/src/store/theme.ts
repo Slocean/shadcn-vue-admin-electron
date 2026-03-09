@@ -130,6 +130,7 @@ export const useThemeStore = defineStore('theme', () => {
   const themeColor = useStorage<ThemeColor>('theme-color', 'zinc')
   const fontFamily = useStorage<ThemeFont>('theme-font-family', 'system')
   const fontSizeOffset = useStorage<number>('theme-font-size-offset', 0)
+  const applyThemeToActiveState = useStorage<boolean>('theme-active-state-use-theme-color', true)
   const resolvedMode = computed<'light' | 'dark'>(() => {
     if (mode.value === 'system') {
       return preferredDark.value ? 'dark' : 'light'
@@ -138,28 +139,33 @@ export const useThemeStore = defineStore('theme', () => {
     return mode.value
   })
 
-  function setMode(newMode: ThemeMode) {
+  function setMode(newMode: ThemeMode): void {
     mode.value = newMode
   }
 
-  function setThemeColor(newColor: ThemeColor) {
+  function setThemeColor(newColor: ThemeColor): void {
     themeColor.value = newColor
   }
 
-  function setFontFamily(newFont: ThemeFont) {
+  function setFontFamily(newFont: ThemeFont): void {
     fontFamily.value = newFont
   }
 
-  function setFontSizeOffset(offset: number) {
+  function setFontSizeOffset(offset: number): void {
     fontSizeOffset.value = Math.max(-2, Math.min(6, offset))
   }
 
-  function applyTheme() {
+  function setApplyThemeToActiveState(enabled: boolean): void {
+    applyThemeToActiveState.value = enabled
+  }
+
+  function applyTheme(): void {
     const root = window.document.documentElement
 
     root.classList.remove('light', 'dark')
     root.classList.add(resolvedMode.value)
     root.style.colorScheme = resolvedMode.value
+    root.setAttribute('data-theme-active-state', applyThemeToActiveState.value ? 'true' : 'false')
 
     if (themes[themeColor.value]) {
       root.setAttribute('data-theme', themeColor.value)
@@ -178,7 +184,7 @@ export const useThemeStore = defineStore('theme', () => {
   }
 
   watch(
-    [mode, themeColor, resolvedMode, fontFamily, fontSizeOffset],
+    [mode, themeColor, resolvedMode, fontFamily, fontSizeOffset, applyThemeToActiveState],
     () => {
       applyTheme()
     },
@@ -191,9 +197,11 @@ export const useThemeStore = defineStore('theme', () => {
     themeColor,
     fontFamily,
     fontSizeOffset,
+    applyThemeToActiveState,
     setMode,
     setThemeColor,
     setFontFamily,
-    setFontSizeOffset
+    setFontSizeOffset,
+    setApplyThemeToActiveState
   }
 })
