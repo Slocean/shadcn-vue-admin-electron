@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { SlidersHorizontal } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -294,7 +295,7 @@ const onPageSizeChange = (value: unknown): void => {
 
 const isColumnVisible = (key: string): boolean => visibleColumnKeys.value.includes(key)
 
-const setColumnVisible = (key: string, checked: boolean | 'indeterminate'): void => {
+const setColumnVisible = (key: string, checked: boolean): void => {
   const visible = checked === true
   const current = new Set(visibleColumnKeys.value)
 
@@ -360,16 +361,20 @@ const getRowKey = (record: any, rowIndex: number): string => {
         </div>
         <DropdownMenu v-if="props.columnFilterable">
           <DropdownMenuTrigger as-child>
-            <Button variant="outline" size="sm">Columns</Button>
+            <Button variant="outline" size="sm" class="gap-2">
+              <SlidersHorizontal class="size-4" />
+              View
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" class="w-52">
-            <DropdownMenuLabel>Show Columns</DropdownMenuLabel>
+            <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem
               v-for="column in props.columns"
               :key="getColumnKey(column)"
-              :checked="isColumnVisible(getColumnKey(column))"
-              @update:checked="(checked) => setColumnVisible(getColumnKey(column), checked)"
+              :model-value="isColumnVisible(getColumnKey(column))"
+              @update:model-value="(checked) => setColumnVisible(getColumnKey(column), checked)"
+              @select.prevent
             >
               {{ column.title }}
             </DropdownMenuCheckboxItem>
