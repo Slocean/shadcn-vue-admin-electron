@@ -430,7 +430,9 @@ const getRowKey = (record: any, rowIndex: number): string => {
                 @click="toggleSort(column)"
               >
                 <span>{{ column.title }}</span>
-                <span class="text-muted-foreground text-xs">{{ getSortIndicator(column) }}</span>
+                <span v-if="props.sortable" class="text-muted-foreground text-xs">
+                  {{ getSortIndicator(column) }}
+                </span>
               </button>
             </TableHead>
           </TableRow>
