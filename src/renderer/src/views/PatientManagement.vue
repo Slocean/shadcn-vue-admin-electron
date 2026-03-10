@@ -12,6 +12,7 @@ import {
 interface PatientItem {
   id: string
   name: string
+  gender: '男' | '女'
   age: number
   device: string
   usageDays: number
@@ -22,6 +23,7 @@ const text = {
   patientList: '患者列表',
   searchPatientName: '搜索患者名称',
   patient: '患者',
+  gender: '性别',
   age: '年龄',
   device: '设备',
   usageDays: '使用天数',
@@ -47,6 +49,7 @@ const patientNames = [
   '朱琳'
 ]
 
+const genders: PatientItem['gender'][] = ['男', '女']
 const devices = ['CPAP-A1', 'CPAP-A2', 'BIPAP-S3', 'BIPAP-S6', 'AutoPAP-X1']
 
 const patientRows: PatientItem[] = Array.from({ length: 24 }, (_, idx) => {
@@ -54,6 +57,7 @@ const patientRows: PatientItem[] = Array.from({ length: 24 }, (_, idx) => {
   return {
     id: `PAT-${String(index).padStart(3, '0')}`,
     name: patientNames[idx % patientNames.length],
+    gender: genders[idx % genders.length],
     age: 26 + (idx % 43),
     device: devices[idx % devices.length],
     usageDays: 5 + idx * 3,
@@ -63,6 +67,7 @@ const patientRows: PatientItem[] = Array.from({ length: 24 }, (_, idx) => {
 
 const tableColumns = [
   { title: text.patient, dataIndex: 'name', key: 'name', align: 'left' as const },
+  { title: text.gender, dataIndex: 'gender', key: 'gender', align: 'center' as const },
   { title: text.age, dataIndex: 'age', key: 'age', align: 'center' as const },
   { title: text.device, dataIndex: 'device', key: 'device', align: 'center' as const },
   { title: text.usageDays, dataIndex: 'usageDays', key: 'usageDays', align: 'center' as const },
