@@ -256,7 +256,7 @@ const endItem = computed(() => {
 })
 
 const filterPlaceholderText = computed(() =>
-  props.filterPlaceholder || textWithFallback('appTable.searchPlaceholder', 'Search')
+  props.filterPlaceholder || textWithFallback('appTable.searchPlaceholder', 'Search all columns')
 )
 
 const emptyTextValue = computed(() =>

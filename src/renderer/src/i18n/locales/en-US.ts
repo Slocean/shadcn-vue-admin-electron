@@ -40,7 +40,7 @@ export default {
     title: 'Report Management'
   },
   appTable: {
-    searchPlaceholder: 'Search',
+    searchPlaceholder: 'Search all columns',
     emptyText: 'No records found',
     view: 'View',
     toggleColumns: 'Toggle columns',

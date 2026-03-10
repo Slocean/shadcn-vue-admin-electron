@@ -106,8 +106,6 @@ const tableTitle = computed(() => `Report List (${tableRows.value.length})`)
       :data-source="tableRows"
       :filter-columns="['reportNo', ['patient', 'name'], 'type', 'status', 'updatedAt']"
       row-key="id"
-      filter-placeholder="Search all columns"
-      empty-text="No records found"
       :pagination="true"
       :default-page-size="10"
       :page-size-options="[10, 20, 30]"
