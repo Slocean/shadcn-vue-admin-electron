@@ -79,6 +79,25 @@ const tableColumns = [
   },
   { title: text.actions, dataIndex: 'actions', key: 'actions', align: 'center' as const }
 ]
+
+const titleActionSlots = [
+  {
+    name: 'action-add',
+    onTrigger: ({ action }) => {
+      if (action === 'click') {
+        console.log('新增')
+      }
+    }
+  },
+  {
+    name: 'action-export',
+    onTrigger: ({ action }) => {
+      if (action === 'click') {
+        console.log('导出')
+      }
+    }
+  }
+]
 </script>
 
 <template>
@@ -91,11 +110,20 @@ const tableColumns = [
       :filter-placeholder="text.searchPatientName"
       row-key="id"
       :sortable="false"
+      :title-action-slots="titleActionSlots"
       :column-filterable="false"
       :pagination="true"
       :default-page-size="10"
       :page-size-options="[10, 20, 30]"
     >
+      <template #action-add="{ trigger }">
+        <button @click="trigger({ action: 'click' })">新增</button>
+      </template>
+
+      <template #action-export="{ trigger }">
+        <button @click="trigger({ action: 'click' })">导出</button>
+      </template>
+
       <template #cell-name="{ value, record }">
         <div class="flex items-center justify-start gap-2">
           <span class="font-medium">{{ value }}</span>

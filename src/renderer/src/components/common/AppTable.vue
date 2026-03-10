@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, useSlots, watch } from 'vue'
 import { SlidersHorizontal } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import { Button } from '@/components/ui/button'
@@ -53,6 +53,18 @@ interface SortState {
   order: SortOrder
 }
 
+interface AppTableTitleActionTriggerPayload {
+  slotName: string
+  action: string
+  event?: Event
+  data?: unknown
+}
+
+interface AppTableTitleActionSlot {
+  name: string
+  onTrigger?: (payload: AppTableTitleActionTriggerPayload) => void
+}
+
 const props = withDefaults(
   defineProps<{
     columns: AppTableColumn[]
@@ -70,6 +82,8 @@ const props = withDefaults(
     pageSizeOptions?: number[]
     showPaginationTotal?: boolean
     showSizeChanger?: boolean
+    titleActionGap?: number | string
+    titleActionSlots?: AppTableTitleActionSlot[]
   }>(),
   {
     title: '',
@@ -83,9 +97,15 @@ const props = withDefaults(
     defaultPageSize: 10,
     pageSizeOptions: () => [10, 20, 30, 50],
     showPaginationTotal: true,
-    showSizeChanger: true
+    showSizeChanger: true,
+    titleActionGap: 8,
+    titleActionSlots: () => []
   }
 )
+const emit = defineEmits<{
+  (event: 'title-action-trigger', payload: AppTableTitleActionTriggerPayload): void
+}>()
+const slots = useSlots()
 const { t } = useI18n()
 
 const keyword = ref('')
@@ -274,6 +294,25 @@ const showingSummaryText = computed(() =>
   })
 )
 
+const resolveGap = (value: number | string): string => {
+  if (typeof value === 'number') {
+    return `${Math.max(0, value)}px`
+  }
+
+  const trimmed = value.trim()
+  return trimmed || '8px'
+}
+
+const resolvedTitleActionSlots = computed(() =>
+  props.titleActionSlots.filter((slotConfig) => typeof slots[slotConfig.name] === 'function')
+)
+
+const hasTitleActions = computed(() => resolvedTitleActionSlots.value.length > 0)
+
+const titleActionStyle = computed(() => ({
+  gap: resolveGap(props.titleActionGap)
+}))
+
 watch(
   () => props.columns,
   (columns) => {
@@ -379,6 +418,25 @@ const getRowKey = (record: any, rowIndex: number): string => {
 
   return String(value)
 }
+
+const triggerTitleAction = (
+  slotConfig: AppTableTitleActionSlot,
+  input?: {
+    action?: string
+    event?: Event
+    data?: unknown
+  }
+): void => {
+  const payload: AppTableTitleActionTriggerPayload = {
+    slotName: slotConfig.name,
+    action: input?.action ?? 'trigger',
+    event: input?.event,
+    data: input?.data
+  }
+
+  slotConfig.onTrigger?.(payload)
+  emit('title-action-trigger', payload)
+}
 </script>
 
 <template>
@@ -386,6 +444,15 @@ const getRowKey = (record: any, rowIndex: number): string => {
     <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
       <h3 v-if="props.title" class="text-base font-semibold">{{ props.title }}</h3>
       <div class="flex w-full flex-col gap-2 md:ml-auto md:w-auto md:flex-row">
+        <div v-if="hasTitleActions" class="flex flex-wrap items-center" :style="titleActionStyle">
+          <slot
+            v-for="slotConfig in resolvedTitleActionSlots"
+            :key="slotConfig.name"
+            :name="slotConfig.name"
+            :slot-config="slotConfig"
+            :trigger="(input) => triggerTitleAction(slotConfig, input)"
+          />
+        </div>
         <div class="w-full md:w-72">
           <Input v-model="keyword" :placeholder="filterPlaceholderText" />
         </div>
