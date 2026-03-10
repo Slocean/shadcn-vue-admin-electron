@@ -1,6 +1,13 @@
 <script setup lang="ts">
+import { MoreHorizontal } from 'lucide-vue-next'
 import AppTable from '@/components/common/AppTable.vue'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 
 interface PatientItem {
   id: string
@@ -9,6 +16,20 @@ interface PatientItem {
   device: string
   usageDays: number
   lastImportedAt: string
+}
+
+const text = {
+  patientList: '患者列表',
+  searchPatientName: '搜索患者名称',
+  patient: '患者',
+  age: '年龄',
+  device: '设备',
+  usageDays: '使用天数',
+  lastImportedAt: '最后一次导入时间',
+  actions: '操作',
+  viewDetail: '查看详情',
+  importData: '导入数据',
+  printReport: '打印报告'
 }
 
 const patientNames = [
@@ -41,28 +62,28 @@ const patientRows: PatientItem[] = Array.from({ length: 24 }, (_, idx) => {
 })
 
 const tableColumns = [
-  { title: '患者', dataIndex: 'name', key: 'name', align: 'left' as const },
-  { title: '年龄', dataIndex: 'age', key: 'age', align: 'center' as const },
-  { title: '设备', dataIndex: 'device', key: 'device', align: 'center' as const },
-  { title: '使用天数', dataIndex: 'usageDays', key: 'usageDays', align: 'center' as const },
+  { title: text.patient, dataIndex: 'name', key: 'name', align: 'left' as const },
+  { title: text.age, dataIndex: 'age', key: 'age', align: 'center' as const },
+  { title: text.device, dataIndex: 'device', key: 'device', align: 'center' as const },
+  { title: text.usageDays, dataIndex: 'usageDays', key: 'usageDays', align: 'center' as const },
   {
-    title: '最后一次导入时间',
+    title: text.lastImportedAt,
     dataIndex: 'lastImportedAt',
     key: 'lastImportedAt',
     align: 'center' as const
   },
-  { title: '操作', dataIndex: 'actions', key: 'actions', align: 'center' as const }
+  { title: text.actions, dataIndex: 'actions', key: 'actions', align: 'center' as const }
 ]
 </script>
 
 <template>
   <section class="py-4">
     <AppTable
-      title="患者列表"
+      :title="text.patientList"
       :columns="tableColumns"
       :data-source="patientRows"
       :filter-columns="['name']"
-      filter-placeholder="搜索患者名称"
+      :filter-placeholder="text.searchPatientName"
       row-key="id"
       :sortable="false"
       :column-filterable="false"
@@ -82,10 +103,20 @@ const tableColumns = [
       </template>
 
       <template #cell-actions>
-        <div class="flex flex-wrap items-center justify-center gap-2">
-          <Button variant="outline" size="sm">查看详情</Button>
-          <Button size="sm">导入数据</Button>
-          <Button variant="secondary" size="sm">打印报告</Button>
+        <div class="flex justify-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <Button variant="outline" size="sm" class="h-8 gap-1.5 px-2">
+                <MoreHorizontal class="size-4" />
+                <span>{{ text.actions }}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" class="min-w-32">
+              <DropdownMenuItem>{{ text.viewDetail }}</DropdownMenuItem>
+              <DropdownMenuItem>{{ text.importData }}</DropdownMenuItem>
+              <DropdownMenuItem>{{ text.printReport }}</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </template>
     </AppTable>
