@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AlwaysOnTopButton from './AlwaysOnTopButton.vue'
+import DragWindowButton from './DragWindowButton.vue'
 import LanguageSwitcherButton from './LanguageSwitcherButton.vue'
 import WindowControls from './WindowControls.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
@@ -9,6 +10,7 @@ withDefaults(
     showLanguage?: boolean
     showTheme?: boolean
     showAlwaysOnTop?: boolean
+    showDrag?: boolean
     showWindowControls?: boolean
     class?: string
   }>(),
@@ -16,6 +18,7 @@ withDefaults(
     showLanguage: true,
     showTheme: true,
     showAlwaysOnTop: true,
+    showDrag: true,
     showWindowControls: true,
     class: 'flex items-center gap-2'
   }
@@ -24,6 +27,7 @@ withDefaults(
 
 <template>
   <div :class="class">
+    <DragWindowButton v-if="showDrag" />
     <LanguageSwitcherButton v-if="showLanguage" />
     <ThemeSettings v-if="showTheme" />
     <AlwaysOnTopButton v-if="showAlwaysOnTop" />
